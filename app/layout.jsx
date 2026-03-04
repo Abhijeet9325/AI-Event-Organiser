@@ -1,5 +1,10 @@
 import Header from "@/components/ui/Header";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ConvexClientProvider } from "./ConvexClientProvider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadesOfPurple } from '@clerk/themes'
+
 export const metadata = {
   title: "AI Event Organizer",
   description: "Smart AI Event Planner",
@@ -8,36 +13,74 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="relative bg-linear-to-br from-gray-950 via-zinc-600 to-stone-900 text-white overflow-x-hidden">
 
-        {/* Background Wrapper */}
-        <div className="fixed inset-0 -z-10">
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <ClerkProvider
+          appearance={{
+            theme: shadesOfPurple,
+        
+  elements: {
+  card: "shadow-none w-full max-w-md mx-auto rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-3 ",
 
-          {/* Base Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-slate-950 to-black"></div>
+ rootBox: "flex justify-center items-start  px-4",
 
-          {/* Left Glow */}
-          <div className="absolute top-20 left-20 w-[400px] h-[400px] bg-blue-500/30 rounded-full blur-[120px]"></div>
+  main: "gap-4",
 
-          {/* Right Glow */}
-          <div className="absolute bottom-20 right-20 w-[400px] h-[400px] bg-cyan-500/50 rounded-full blur-[120px]"></div>
+  headerTitle: "text-lg font-semibold text-white",
+  headerSubtitle: "text-sm text-gray-400 mb-3",
 
-          {/* Grid Overlay */}
-          <div className="absolute inset-0 
-            bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),
-            linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)]
-            bg-[size:80px_80px]">
-          </div>
+  socialButtonsBlockButton:
+    "h-9 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition",
 
-        </div>
+  formFieldLabel: "text-sm mb-1 text-gray-300",
 
-        {/* Main Content */}
-        <Header/>
-        <main className="relative min-h-screen z-10">
-          {children}
-        </main>
+  formFieldInput:
+    "h-7 text-sm bg-white/10 border border-white/10 rounded-lg focus:ring-2 focus:ring-cyan-400 text-white",
 
-      </body>
+  formButtonPrimary:
+    "bg-yellow-400 hover:bg-yellow-300 text-black font-medium h-7 rounded-lg transition",
+
+  footerActionText: "text-sm text-gray-400",
+  footerActionLink: "text-sm text-yellow-400 hover:text-yellow-300",
+},
+
+variables: {
+  fontSize: "0.8rem",
+}
+          }}>
+          <ConvexClientProvider>
+            <body className="relative bg-zinc-950 text-white overflow-x-hidden min-h-screen">
+              {/* Background Image with Overlay */}
+              <div className="fixed inset-0 pointer-events-none -z-10">
+                <div
+                  className="absolute -z-10 inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage:
+                      "url('https://plus.unsplash.com/premium_photo-1764691261153-773d28bb3cc6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE3fHx8ZW58MHx8fHx8')",
+                    opacity: 0.32,
+                     
+                  }}
+                />
+                <div className="absolute inset-0 bg-linear-to-b from-transparent via-zinc-950/80 to-zinc-950" />
+              </div>
+
+
+              {/* Main Content */}
+
+              <Header />
+              <main className="relative min-h-screen z-10">
+                {children}
+              </main>
+
+            </body>
+          </ConvexClientProvider>
+        </ClerkProvider>
+      </ThemeProvider>
     </html>
   );
 }
