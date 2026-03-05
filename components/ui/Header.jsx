@@ -1,10 +1,12 @@
 "use client";
-import { Search } from "lucide-react";
+import { Building, Search, Ticket } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Authenticated } from "convex/react";
 import { Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
+import { Button } from "./button";
+import { Plus } from "lucide-react";
 
 import {
     SignInButton,
@@ -70,7 +72,28 @@ const Header = () => {
 
                         <div className="h-4 w-px bg-white/10"></div>
                         <Authenticated>
-                            <UserButton afterSignOutUrl="/" />
+                            <Button size= "sm" asChild className = "flex gap-2 mr-4">
+                                <Link href={"/create-events"}>
+                                <Plus className = "w-4 h-4" />
+                                <span className="hidden sm:inline">Create Event</span>
+                                </Link>
+                            </Button>
+                            <UserButton>
+                                <UserButton.MenuItems>
+                                    <UserButton.Link
+                                    label="My Tickets"
+                                    labelIcon = {<Ticket size={16}/>}
+                                    href="/my-tickets"
+                                    />
+                                    <UserButton.Link
+                                    label="My Events"
+                                    labelIcon = {<Building size={16}/>}
+                                    href="/my-events"
+                                    />
+                                    
+                                    <UserButton.Action label = "manageAccount"/>
+                                </UserButton.MenuItems>
+                                 </UserButton>
                         </Authenticated>
                         <Unauthenticated>
                             <SignInButton mode="modal">
