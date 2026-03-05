@@ -75,7 +75,7 @@ const Header = () => {
                             <Button size= "sm" asChild className = "flex gap-2 mr-4">
                                 <Link href={"/create-events"}>
                                 <Plus className = "w-4 h-4" />
-                                <span className="hidden sm:inline">Create Event</span>
+                                <span className="hidden sm:inline font-semibold">Create Event</span>
                                 </Link>
                             </Button>
                             <UserButton>
