@@ -7,6 +7,7 @@ import { Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
 import { Button } from "./button";
 import { Plus } from "lucide-react";
+import { Bricolage_Grotesque } from "next/font/google";
 
 import {
     SignInButton,
@@ -15,12 +16,18 @@ import {
 import { useStoreUser } from "@/hooks/use-store-user";
 
 
+
+
+const bricolageGrotesque= Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 const Header = () => {
 
     const { isLoading } = useStoreUser();
     return (
         <>
-            <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-zinc-950/30 border-b border-white/5">
+            <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-zinc-950/30  border-b border-white/5">
                 <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
 
                     {/* Logo */}
@@ -33,7 +40,7 @@ const Header = () => {
                                 height={35}
                                 className=" shrink-0 filter invert"
                             />
-                            <span className="text-white">AIvento</span>
+                            <span className={`text-white font-medium ${bricolageGrotesque.className}`}>AIvento</span>
                         </div>
                     </Link>
 
@@ -62,7 +69,7 @@ const Header = () => {
                     {/* Right Side */}
                     <div className="flex items-center gap-4 text-sm font-medium">
 
-                        <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                        <Link href="/explore" className="text-gray-400 hover:text-white transition-colors">
                             Explore
                         </Link>
 

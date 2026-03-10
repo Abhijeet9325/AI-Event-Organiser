@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from '@clerk/themes'
-import SparkDrop from "@/components/SparkDrop";
+
 import { Inter } from "next/font/google";
 
 export const metadata = {
@@ -18,7 +18,7 @@ const inter = Inter({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="">
 
       <ThemeProvider
         attribute="class"
@@ -47,32 +47,18 @@ export default function RootLayout({ children }) {
             }
           }}>
           <ConvexClientProvider>
-            <body className={`relative bg-zinc-950  text-white overflow-x-hidden min-h-screen ${inter.className}`}>
+            <body className={`relative bg-zinc-950 text-white overflow-x-hidden h-full ${inter.className}`}>
               {/* Background Image with Overlay */}
               <div className="fixed inset-0 pointer-events-none -z-10">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1635094483454-0722881acccd?q=80&w=2000&auto=format&fit=crop')",
-                    opacity: 0.16,
-                  }}
-
-                />
-                {/* Spark Animation */}
-                <SparkDrop />
+                {/* Background Shadow Overlay */}
                 <div className="absolute inset-0 bg-linear-to-b from-transparent via-zinc-950/80 to-zinc-950" />
               </div>
 
-
               {/* Main Content */}
-
               <Header />
-              <main className="relative min-h-screen z-10">
+              <main className="relative z-10">
                 {children}
-
               </main>
-
             </body>
           </ConvexClientProvider>
         </ClerkProvider>

@@ -1,6 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { QrCode } from "lucide-react";
+
 
 export default defineSchema({
     // users table 
@@ -52,6 +52,7 @@ export default defineSchema({
         address: v.optional(v.string()),
         city: v.string(),
         state: v.optional(v.string()),
+        country : v.string(),
 
         // Capacity and ticketing
 

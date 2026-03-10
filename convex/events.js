@@ -42,20 +42,20 @@ export const getEventByLocation = query({
             .collect();
 
         // Filter by city or state
+        let filteredEvents = events;
 
         if (args.city) {
-            const events = events.filter(
+            filteredEvents = events.filter(
                 (e) => e.city.toLowerCase() === args.city.toLowerCase()
-            )
+            );
         }
-        else {
-            const events = events.filter(
+        else if (args.state) {
+            filteredEvents = events.filter(
                 (e) => e.state.toLowerCase() === args.state.toLowerCase()
-            )
+            );
         }
 
-        return events.slice(0, args.limit ?? 4);
-
+        return filteredEvents.slice(0, args.limit ?? 4);
 
     }
 })
@@ -112,9 +112,9 @@ export const getCategoryCounts = query({
 
         // counts events by category
         const counts = {};
-        events.forEach((events) => {
-            counts[events.category] = (counts[events.category] || 0) + 1;
-        })
+        events.forEach((event) => {
+            counts[event.category] = (counts[event.category] || 0) + 1;
+        })        
         return counts;
     } 
    
