@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from '@clerk/themes'
 
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "AI Event Organizer",
@@ -59,6 +60,7 @@ export default function RootLayout({ children }) {
               <main className="relative z-10">
                 {children}
               </main>
+              <Toaster richColors/>
             </body>
           </ConvexClientProvider>
         </ClerkProvider>

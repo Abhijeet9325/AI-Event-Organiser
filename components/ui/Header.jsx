@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Authenticated } from "convex/react";
 import { Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
-import { Button } from "./button";
+import { Button } from "@/components/ui/Button"
 import { Plus } from "lucide-react";
 import { Bricolage_Grotesque } from "next/font/google";
 
@@ -79,10 +79,11 @@ const Header = () => {
 
                         <div className="h-4 w-px bg-white/10"></div>
                         <Authenticated>
-                            <Button size= "sm" asChild className = "flex gap-2 mr-4">
+                            <Button size= "sm" variant="outline" asChild className = "flex gap-2 bg-white/80 text-black mr-4">
                                 <Link href={"/create-events"}>
                                 <Plus className = "w-4 h-4" />
-                                <span className="hidden sm:inline font-semibold">Create Event</span>
+                                
+                                <span className="hidden sm:inline font-semibold">Create Event</span >
                                 </Link>
                             </Button>
                             <UserButton>

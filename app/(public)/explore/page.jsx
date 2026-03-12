@@ -1,21 +1,155 @@
 "use client"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { api } from '@/convex/_generated/api'
-import { useQuery } from 'convex/react'
-import React from 'react'
+import { useConvexQuery } from '@/hooks/use-convex-query'
+import Autoplay from 'embla-carousel-autoplay'
+import { useRouter } from 'next/navigation'
+import React, { useRef } from 'react'
+import Image from 'next/image'
+import { Badge } from '@/components/ui/badge'
+import { format } from 'date-fns'
+import { ArrowRight, Calendar, MapPin, Users } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+
+
 
 const explorePage = () => {
-  const data = useQuery(api.events.getFeaturedEvents);
-  
-  console.log(data);
+  // fetch current user for location
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+  const router = useRouter();
 
-  if (data === undefined) {
-    return <div className="text-white">Loading events...</div>;
+  const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(api.explore.getFeaturedEvents, { limit: 3 });
+
+  const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(api.explore.getEventByLocation, {
+    city: currentUser?.location?.city || "Nagpur",
+    state: currentUser?.location?.state || "Maharashtra",
+    limit: 4,
+  });
+
+  const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(
+    api.explore.getPopularEvents, {
+    limit: 4
   }
+  );
+
+  const { data: categoryCounts } = useConvexQuery(api.explore.getCategoryCounts);
+
+  const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+
+  const handleEventClick = (slug) => {
+    router.push(`/events/${slug}`);
+  };
+
+  const handleViewLocalEvents = ()=>{
+    const city = currentUser?.location?.city || "Nagpur";
+    const state = currentUser?.location?.state || "Maharashtra";
+
+    router.push(`/explore/location/${city.toLowerCase()}-${state.toLowerCase()}`);
+  }
+
   return (
-    <div className='text-white'>
-      explorePage
-    </div>
-  )
-}
+    <>
+      <div className='text-white text-center mb-12'>
+        <h1 className='text-5xl mb-4 font-bold mx-auto'>Discover Events</h1>
+        <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
+          Explore featured events, find what&apos;s happening locally, or browse events across India
+        </p>
+      </div>
+
+      {/* featured carousel */}
+      {featuredEvents && featuredEvents.length > 0 && (
+        <div className='mb-16 relative group'>
+          <Carousel
+            className="w-full max-w-5xl mx-auto px-4 md:px-0"
+            plugins={[plugin.current]}
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+          >
+            <CarouselContent>
+              {featuredEvents.map((event) => (
+                <CarouselItem key={event._id} className="basis-full">
+                  <div
+                    className='relative h-[350px] md:h-[400px] rounded-2xl overflow-hidden cursor-pointer group transition-all duration-500'
+                    onClick={() => handleEventClick(event.slug)}
+                  >
+                    {event.coverImage ? (
+                      <Image
+                        src={event.coverImage}
+                        alt={event.title}
+                        fill
+                        className="object-cover"
+                        priority
+                      />
+                    ) : (
+                      <div className='absolute inset-0' style={{ backgroundColor: event.themeColor }} />
+                    )}
+                    {/* Subtle Overlay */}
+                    <div className='absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300'></div>
+
+                    {/* Content Overlay */}
+                    <div className='absolute inset-0 flex flex-col justify-end p-6 md:p-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent'>
+                      <div className='max-w-4xl'>
+                        <Badge className='bg-black/60 backdrop-blur-md px-3 py-1 mb-4 rounded-md text-[10px] uppercase tracking-wider font-semibold text-white border border-white/10'>
+                          {event.city}, {event.state || event.country}
+                        </Badge>
+
+                        <h2 className='text-3xl md:text-5xl font-bold mb-4 text-white leading-tight tracking-tight'>
+                          {event.title}
+                        </h2>
+
+                        <p className='text-base md:text-lg text-white/80 mb-8 max-w-3xl line-clamp-2 leading-relaxed'>
+                          {event.description}
+                        </p>
+
+                        <div className='flex flex-wrap items-center gap-6 text-white/90'>
+                          <div className='flex items-center gap-2'>
+                            <Calendar className="w-4 h-4 text-white/70" />
+                            <span className='text-sm font-medium'>
+                              {format(event.startDate, "MMMM do, yyyy")}
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-2'>
+                            <MapPin className="w-4 h-4 text-white/70" />
+                            <span className='text-sm font-medium'>{event.city}</span>
+                          </div>
+                          <div className='flex items-center gap-2'>
+                            <Users className='w-4 h-4 text-white/70' />
+                            <span className='text-sm font-medium'>
+                              {event.registrationCount || 0} registered
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-1" />
+            <CarouselNext className="right-1" />
+          </Carousel>
+        </div>
+      )}
+
+      {/*Local events*/}
+
+      {localEvents && localEvents.length > 0 && (
+        <div className='mb-16'>
+          <div className='flex items-center justify-center mb-6'>
+            <div>
+              <h2 className='text-3xl mb-1 font-bold'>Events Near You</h2>
+              <p className='text-muted-foreground'>
+                Happening in your area - {currentUser?.location?.city || "Nagpur"}, {currentUser?.location?.state || "Maharashtra"}
+              </p>
+            </div>
+            <Button variant='outline' className="gap-2" onClick={handleViewLocalEvents} >
+              View All <ArrowRight className='w-4 h-4' />
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 export default explorePage
