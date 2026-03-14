@@ -1,10 +1,9 @@
 import React from 'react'
 import { Card, CardContent } from './card'
-import { getCategoryIcon } from '@/lib/data'
+import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import Image from 'next/image'
 import { format } from 'date-fns'
-import { MapPin, Users } from 'lucide-react'
-import { Badge } from './badge'
+import { MapPin, Users, Calendar } from 'lucide-react'
 
 const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "grid", className = "" }) => {
     if (variant === "list") {
@@ -72,30 +71,45 @@ const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "g
                         {getCategoryIcon(event.category)}
                     </div>
                 )}
+                {/* Paid/Free Badge */}
                 <div className='absolute top-3 right-3'>
-                    <Badge variant='secondary'>
+                    <div className='bg-black/60 backdrop-blur-md px-3 py-1 rounded-md text-[10px] font-bold text-white border border-white/10'>
                         {event.ticketType === "free" ? "Free" : "Paid"}
-                    </Badge>
+                    </div>
                 </div>
             </div>
-            <CardContent className="p-5 flex flex-col gap-1.5">
-                <h3 className='font-bold text-lg text-white mb-1 group-hover:text-gray-300 transition-colors line-clamp-2'>
+            <CardContent className="p-5 flex flex-col gap-3">
+                {/* Category Badge */}
+                <div className='flex'>
+                    <div className='flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full border border-white/5'>
+                        <span className='text-xs'>{getCategoryIcon(event.category)}</span>
+                        <span className='text-[10px] font-medium text-gray-300'>{getCategoryLabel(event.category)}</span>
+                    </div>
+                </div>
+
+                <h3 className='font-bold text-lg text-white group-hover:text-purple-400 transition-colors line-clamp-2 leading-tight'>
                     {event.title}
                 </h3>
-                <p className='text-xs text-gray-400 font-medium'>
-                    {format(event.startDate, "EEE, dd MMM, HH:mm")}
-                </p>
-                <div className='flex items-center gap-2 text-xs text-gray-500'>
-                    <MapPin className='w-3.5 h-3.5' />
-                    <span className='line-clamp-1'>
-                        {event.locationType === "online" ? "Online Event" : event.city}
-                    </span>
-                </div>
-                <div className='flex items-center gap-2 text-xs text-gray-500'>
-                    <Users className='w-3.5 h-3.5' />
-                    <span>
-                        {event.registrationCount || 0} attending
-                    </span>
+
+                <div className='flex flex-col gap-2 mt-1'>
+                    <div className='flex items-center gap-2 text-xs text-gray-400'>
+                        <Calendar className='w-3.5 h-3.5 text-gray-500' />
+                        <span className='font-medium'>
+                            {format(event.startDate, "MMMM do, yyyy")}
+                        </span>
+                    </div>
+                    <div className='flex items-center gap-2 text-xs text-gray-400'>
+                        <MapPin className='w-3.5 h-3.5 text-gray-500' />
+                        <span className='line-clamp-1'>
+                            {event.city}, {event.state || event.country}
+                        </span>
+                    </div>
+                    <div className='flex items-center gap-2 text-xs text-gray-400'>
+                        <Users className='w-3.5 h-3.5 text-gray-500' />
+                        <span>
+                            {event.registrationCount || 0} / {event.capacity} registered
+                        </span>
+                    </div>
                 </div>
             </CardContent>
         </Card>

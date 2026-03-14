@@ -12,6 +12,7 @@
     "@clerk/clerk-react": "^5.61.3",
     "@clerk/nextjs": "^6.39.0",
     "@clerk/themes": "^2.4.57",
+    "@heroui/badge": "^2.2.18",
     "@tabler/icons-react": "^3.40.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

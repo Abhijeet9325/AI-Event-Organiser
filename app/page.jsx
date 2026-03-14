@@ -34,11 +34,14 @@ export default function Home() {
           Sign up
         </button>
 
-        <button className="bg-white/10 hover:bg-white/12 border border-white/10 px-6 py-2 rounded-sm transition">
-      <Link href={"/explore"}>
+        <Link
+          href="/explore"
+          className="bg-white/10 hover:bg-white/12 border border-white/10 px-6 py-2 rounded-sm transition flex items-center justify-center"
+          role="button"
+          tabIndex={0}
+        >
           Explore
-      </Link>
-        </button>
+        </Link>
       </div>
 
       {/* Bottom Text */}
