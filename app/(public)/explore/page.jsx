@@ -8,8 +8,10 @@ import React, { useRef } from 'react'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
-import { ArrowRight, Calendar, MapPin, Users } from 'lucide-react'
+import { ArrowRight, Calendar, Loader2, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { createLocationSlug } from '@/lib/location-utils'
+import EventCard from '@/components/ui/event-card'
 
 
 
@@ -21,7 +23,7 @@ const explorePage = () => {
   const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(api.explore.getFeaturedEvents, { limit: 3 });
 
   const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(api.explore.getEventByLocation, {
-    city: currentUser?.location?.city || "Nagpur",
+    city: currentUser?.location?.city || "Pune",
     state: currentUser?.location?.state || "Maharashtra",
     limit: 4,
   });
@@ -41,17 +43,28 @@ const explorePage = () => {
   };
 
   const handleViewLocalEvents = ()=>{
-    const city = currentUser?.location?.city || "Nagpur";
+    const city = currentUser?.location?.city || "Pune";
     const state = currentUser?.location?.state || "Maharashtra";
 
     router.push(`/explore/location/${city.toLowerCase()}-${state.toLowerCase()}`);
+    const slug = createLocationSlug(city,state) ;
+  }
+  // Loading state
+  const isLoading = loadingFeatured || loadingLocal || loadingPopular;
+
+  if(isLoading){
+    return(
+      <div className='min-h-screen flex items-center justify-center'>
+        <Loader2 className='animate-spin w-8 h-8 text-purple-800'/>
+      </div>
+    )
   }
 
   return (
-    <>
+    <div className='bg-gray-950 min-h-screen'>
       <div className='text-white text-center mb-12'>
         <h1 className='text-5xl mb-4 font-bold mx-auto'>Discover Events</h1>
-        <p className='text-lg text-muted-foreground max-w-3xl mx-auto'>
+        <p className='text-lg text-gray-400 text-muted-foreground max-w-3xl mx-auto'>
           Explore featured events, find what&apos;s happening locally, or browse events across India
         </p>
       </div>
@@ -135,20 +148,35 @@ const explorePage = () => {
 
       {localEvents && localEvents.length > 0 && (
         <div className='mb-16'>
-          <div className='flex items-center justify-center mb-6'>
+          <div className='flex items-end justify-between mb-8'>
             <div>
-              <h2 className='text-3xl mb-1 font-bold'>Events Near You</h2>
-              <p className='text-muted-foreground'>
-                Happening in your area - {currentUser?.location?.city || "Nagpur"}, {currentUser?.location?.state || "Maharashtra"}
+              <h2 className='text-3xl font-bold text-white mb-2'>Events Near You</h2>
+              <p className='text-gray-400'>
+                Happening in {currentUser?.location?.city || "Pune"}
               </p>
             </div>
-            <Button variant='outline' className="gap-2" onClick={handleViewLocalEvents} >
-              View All <ArrowRight className='w-4 h-4' />
+            <Button 
+              variant='outline' 
+              className="gap-2 bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-1.5 text-xs font-semibold h-auto" 
+              onClick={handleViewLocalEvents}
+            >
+              View All <ArrowRight className='w-3 h-3' />
             </Button>
+          </div>
+
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+            {localEvents.map((event) => (
+              <EventCard
+                key={event._id}
+                event={event}
+                variant="grid"
+                onClick={() => handleEventClick(event.slug)}
+              />
+            ))}
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
