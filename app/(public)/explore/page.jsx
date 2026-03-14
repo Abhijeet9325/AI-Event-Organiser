@@ -12,6 +12,8 @@ import { ArrowRight, Calendar, Loader2, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { createLocationSlug } from '@/lib/location-utils'
 import EventCard from '@/components/ui/event-card'
+import { CATEGORIES } from '@/lib/data'
+import { Card, CardContent } from '@/components/ui/card'
 
 
 
@@ -36,26 +38,35 @@ const explorePage = () => {
 
   const { data: categoryCounts } = useConvexQuery(api.explore.getCategoryCounts);
 
+  const categoryWithCounts = CATEGORIES.map((cat) => {
+    return {
+      ...cat,
+      count: categoryCounts?.[cat.id] || 0,
+    };
+  })
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
 
   const handleEventClick = (slug) => {
     router.push(`/events/${slug}`);
   };
+  const handleCategoryClick = (categoryId) => {
+    router.push(`/events/${categoryId}`);
+  };
 
-  const handleViewLocalEvents = ()=>{
+  const handleViewLocalEvents = () => {
     const city = currentUser?.location?.city || "Pune";
     const state = currentUser?.location?.state || "Maharashtra";
 
     router.push(`/explore/location/${city.toLowerCase()}-${state.toLowerCase()}`);
-    const slug = createLocationSlug(city,state) ;
+    const slug = createLocationSlug(city, state);
   }
   // Loading state
   const isLoading = loadingFeatured || loadingLocal || loadingPopular;
 
-  if(isLoading){
-    return(
+  if (isLoading) {
+    return (
       <div className='min-h-screen flex items-center justify-center'>
-        <Loader2 className='animate-spin w-8 h-8 text-purple-800'/>
+        <Loader2 className='animate-spin w-8 h-8 text-purple-800' />
       </div>
     )
   }
@@ -155,9 +166,9 @@ const explorePage = () => {
                 Happening in {currentUser?.location?.city || "Pune"}
               </p>
             </div>
-            <Button 
-              variant='outline' 
-              className="gap-2 bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-1.5 text-xs font-semibold h-auto" 
+            <Button
+              variant='outline'
+              className="gap-2 bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-1.5 text-xs font-semibold h-auto"
               onClick={handleViewLocalEvents}
             >
               View All <ArrowRight className='w-3 h-3' />
@@ -176,6 +187,35 @@ const explorePage = () => {
           </div>
         </div>
       )}
+      {/* Browse by Category*/}
+      <div className='mb-16'>
+        <h2 className='text-3xl font-bold mb-6 text-white'>Browse By Category</h2>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+          {categoryWithCounts.map((category) => (
+            <Card 
+              key={category.id}
+              className="py-2 group cursor-pointer bg-[#1A1A1A] border-white/5 hover:border-white/10 hover:bg-white/5 transition-all rounded-xl"
+              onClick={() => handleCategoryClick(category.id)}
+            >
+              <CardContent className="px-4 py-3 flex items-center gap-4">
+                <div className='text-3xl group-hover:scale-110 transition-transform'>{category.icon}</div>
+                <div className='min-w-0 flex-1'>
+                  <h3 className='font-bold text-sm text-white group-hover:text-purple-400 transition-colors truncate'>
+                    {category.label}
+                  </h3>
+                  <p className='text-xs text-gray-500'>
+                    {category.count} {category.count === 1 ? "Event" : "Events"}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/*Popular events Across Country*/}
+      
+
     </div>
   );
 };
