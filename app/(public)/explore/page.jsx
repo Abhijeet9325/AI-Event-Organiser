@@ -14,6 +14,7 @@ import { createLocationSlug } from '@/lib/location-utils'
 import EventCard from '@/components/ui/event-card'
 import { CATEGORIES } from '@/lib/data'
 import { Card, CardContent } from '@/components/ui/card'
+import Link from 'next/link'
 
 
 
@@ -192,7 +193,7 @@ const explorePage = () => {
         <h2 className='text-3xl font-bold mb-6 text-white'>Browse By Category</h2>
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
           {categoryWithCounts.map((category) => (
-            <Card 
+            <Card
               key={category.id}
               className="py-2 group cursor-pointer bg-[#1A1A1A] border-white/5 hover:border-white/10 hover:bg-white/5 transition-all rounded-xl"
               onClick={() => handleCategoryClick(category.id)}
@@ -214,8 +215,46 @@ const explorePage = () => {
       </div>
 
       {/*Popular events Across Country*/}
-      
+      {popularEvents && popularEvents.length > 0 && (
+        <div className='mb-16'>
+          <div className='mb-6'>
+            <h2 className='text-3xl font-bold mb-1'>Popular Across India</h2>
+            <p className='text-muted-foreground'>Trending Events Nationwide</p>
+          </div>
+          <div className='grid grid-cols-1 gap-4'>
+            {popularEvents.map((event) => {
+              <EventCard
+                key={event.id}
+                event={event}
+                variant='list'
+                onClick={() => handleEventClick(event.slug)}
+              />
+            })}
+          </div>
+        </div>
+      )}
 
+      {/* Empty State */}
+      {!loadingFeatured &&
+        !loadingLocal &&
+        !loadingPopular &&
+        (!featuredEvents || featuredEvents.length === 0) &&
+        (!localEvents || localEvents.length === 0) &&
+        (!popularEvents || popularEvents.length === 0) && (
+          <Card className="p-12 text-center">
+            <div className='max-w-md mx-auto space-y-4'>
+              <div className='text-6xl mb-4'>🎉</div>
+              <h2 className='text-2xl font-bold'>No events yet</h2>
+              <p className='text-muted-foreground'>
+                Be the first to create an event in your area!
+              </p>
+              <Button asChild className="gap-2 bg-white text-black">
+                <Link href={"/create-event"}>Create Event</Link>
+              </Button>
+            </div>
+          </Card>
+        )
+      }
     </div>
   );
 };
