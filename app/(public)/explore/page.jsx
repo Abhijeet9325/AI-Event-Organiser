@@ -33,7 +33,7 @@ const explorePage = () => {
 
   const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(
     api.explore.getPopularEvents, {
-    limit: 4
+    limit: 6
   }
   );
 
@@ -157,25 +157,24 @@ const explorePage = () => {
       )}
 
       {/*Local events*/}
-
-      {localEvents && localEvents.length > 0 && (
-        <div className='mb-16'>
-          <div className='flex items-end justify-between mb-8'>
-            <div>
-              <h2 className='text-3xl font-bold text-white mb-2'>Events Near You</h2>
-              <p className='text-gray-400'>
-                Happening in {currentUser?.location?.city || "Pune"}
-              </p>
-            </div>
-            <Button
-              variant='outline'
-              className="gap-2 bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-1.5 text-xs font-semibold h-auto"
-              onClick={handleViewLocalEvents}
-            >
-              View All <ArrowRight className='w-3 h-3' />
-            </Button>
+      <div className='mb-16'>
+        <div className='flex items-end justify-between mb-8'>
+          <div>
+            <h2 className='text-3xl font-bold text-white mb-2'>Events Near You</h2>
+            <p className='text-gray-400'>
+              Happening in {currentUser?.location?.city || "Pune"}
+            </p>
           </div>
+          <Button
+            variant='outline'
+            className="gap-2 bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-lg px-4 py-1.5 text-xs font-semibold h-auto"
+            onClick={handleViewLocalEvents}
+          >
+            View All <ArrowRight className='w-3 h-3' />
+          </Button>
+        </div>
 
+        {localEvents && localEvents.length > 0 ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
             {localEvents.map((event) => (
               <EventCard
@@ -186,8 +185,16 @@ const explorePage = () => {
               />
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className='py-12 px-6 text-center bg-white/5 rounded-2xl border border-white/5'>
+            <div className='text-4xl mb-3'>📍</div>
+            <h3 className='text-lg font-semibold text-white'>No local events yet</h3>
+            <p className='text-gray-400 text-sm mt-1'>
+              Try checking other cities or create your own event!
+            </p>
+          </div>
+        )}
+      </div>
       {/* Browse by Category*/}
       <div className='mb-16'>
         <h2 className='text-3xl font-bold mb-6 text-white'>Browse By Category</h2>
@@ -215,46 +222,32 @@ const explorePage = () => {
       </div>
 
       {/*Popular events Across Country*/}
-      {popularEvents && popularEvents.length > 0 && (
-        <div className='mb-16'>
-          <div className='mb-6'>
-            <h2 className='text-3xl font-bold mb-1'>Popular Across India</h2>
-            <p className='text-muted-foreground'>Trending Events Nationwide</p>
-          </div>
-          <div className='grid grid-cols-1 gap-4'>
-            {popularEvents.map((event) => {
+      <div className='mb-16'>
+        <div className='mb-8'>
+          <h2 className='text-3xl font-bold mb-1 text-white leading-tight'>Popular Across India</h2>
+          <p className='text-muted-foreground text-sm'>Trending events nationwide</p>
+        </div>
+
+        {popularEvents && popularEvents.length > 0 ? (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {popularEvents.map((event) => (
               <EventCard
-                key={event.id}
+                key={event._id}
                 event={event}
                 variant='list'
                 onClick={() => handleEventClick(event.slug)}
               />
-            })}
+            ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className='py-12 px-6 text-center bg-white/5 rounded-2xl border border-white/5'>
+            <div className='text-4xl mb-3'>🔥</div>
+            <h3 className='text-lg font-semibold text-white'>No trending events yet</h3>
+            <p className='text-gray-400 text-sm mt-1'>Check back later for popular events across the country!</p>
+          </div>
+        )}
+      </div>
 
-      {/* Empty State */}
-      {!loadingFeatured &&
-        !loadingLocal &&
-        !loadingPopular &&
-        (!featuredEvents || featuredEvents.length === 0) &&
-        (!localEvents || localEvents.length === 0) &&
-        (!popularEvents || popularEvents.length === 0) && (
-          <Card className="p-12 text-center">
-            <div className='max-w-md mx-auto space-y-4'>
-              <div className='text-6xl mb-4'>🎉</div>
-              <h2 className='text-2xl font-bold'>No events yet</h2>
-              <p className='text-muted-foreground'>
-                Be the first to create an event in your area!
-              </p>
-              <Button asChild className="gap-2 bg-white text-black">
-                <Link href={"/create-event"}>Create Event</Link>
-              </Button>
-            </div>
-          </Card>
-        )
-      }
     </div>
   );
 };

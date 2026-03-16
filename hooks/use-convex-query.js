@@ -1,10 +1,10 @@
-import { query } from "@/convex/_generated/server";
+
 import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export const useConvexQuery = (query, ...args) => {
-    const result = useQuery(query);
+export const useConvexQuery = (query, args) => {
+    const result = useQuery(query, args);
     const [data, setData] = useState(undefined)
     const [isLoading, setisLoading] = useState(true)
     const [error, setError] = useState(null)
