@@ -14,8 +14,8 @@ import {
     UserButton,
 } from '@clerk/nextjs'
 import { useStoreUser } from "@/hooks/use-store-user";
-
-
+import OnboardingModal from "./onboarding";
+import { UseOnBoarding, useOnBoarding } from "@/hooks/use-onboarding";
 
 
 const bricolageGrotesque= Bricolage_Grotesque({
@@ -25,6 +25,10 @@ const bricolageGrotesque= Bricolage_Grotesque({
 const Header = () => {
 
     const { isLoading } = useStoreUser();
+    const {
+        showOnBoarding,
+        handleOnBoardingComplete,
+        handleOnBoardingSkip,} = UseOnBoarding()
     return (
         <>
             <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-zinc-950/30  border-b border-white/5">
@@ -111,12 +115,21 @@ const Header = () => {
                             </SignInButton>
                         </Unauthenticated>
                     </div>
+                        
                 </div>
                 {/* Loader */}
                {isLoading &&( <div className="absolute bottom-0 left-0 w-full">
                     <BarLoader width={"100%"} color="#a855f7" />
                 </div>)}
             </header>
+
+            {/* Modals*/}
+            <OnboardingModal
+            isOpen={showOnBoarding}
+            onClose={handleOnBoardingSkip}
+            onComplete={handleOnBoardingComplete}
+            />
+        
         </>
     );
 }
