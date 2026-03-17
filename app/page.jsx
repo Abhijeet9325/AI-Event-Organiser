@@ -1,6 +1,11 @@
 import { ArrowRight, Bell, Calendar, CreditCard, LayoutGrid, Search, Ticket, Wallet } from "lucide-react";
 import Link from "next/link";
+import { Bricolage_Grotesque } from "next/font/google";
 
+const bricolageGrotesque = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export default function Home() {
   return (
@@ -8,7 +13,7 @@ export default function Home() {
       {/* ✅ Background Image & Overlay */}
       <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden select-none">
         {/* Background Image */}
-        <div className="absolute inset-0 bg-[url('/bg.svg')] bg-cover bg-center -z-30 opacity-50" />
+        <div className="absolute inset-0 bg-[url('/bg.svg')] bg-cover bg-center -z-30 opacity-30" />
 
         {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950 -z-20" />
@@ -19,18 +24,15 @@ export default function Home() {
 
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left Side: Content */}
-        <div className="text-left space-y-6">
+        <div className="text-left ml-4 space-y-6">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-medium text-green-400">
-            <span className="relative flex h-1.5 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-            </span>
+           
             New: AI Event Personalization
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
-            Build smart events <br />
-            with <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">AIvento</span>
+          <h1 className={`text-4xl md:text-6xl leading-tight tracking-tight font-bold ${bricolageGrotesque.className}`}>
+            Build smart events <br className="font-semibold" />
+            with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16d59e] font-extrabold to-emerald-700">AIvento</span>
           </h1>
 
           <p className="text-gray-400 max-w-lg text-base md:text-lg leading-relaxed">
@@ -39,13 +41,13 @@ export default function Home() {
           </p>
 
           <div className="flex gap-3 flex-wrap">
-            <button className="bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-xl font-bold text-base transition-all active:scale-95 shadow-[0_0_15px_rgba(34,197,94,0.25)]">
+            <button className="bg-white text-black hover:bg-gray-100  px-4 py-0 rounded-sm font-semibold text-sm transition-all active:scale-95 shadow-[0_0_15px_rgba(34,197,94,0.25)]">
               Get Started
             </button>
 
             <Link
               href="/explore"
-              className="bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-3 rounded-xl font-bold text-base transition-all flex items-center gap-2 group"
+              className="bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-sm font-semibold text-sm transition-all flex items-center gap-2 group"
             >
               Explore Events
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -101,16 +103,16 @@ export default function Home() {
 
             {/* Main Action Buttons */}
             <div className="grid grid-cols-2 gap-2 mb-6">
-              <div className="bg-[#CCFF00] p-2.5 rounded-xl flex items-center justify-center font-bold text-black text-[10px] cursor-pointer hover:opacity-90 transition-opacity">
+              <div className="bg-[#CCFF00] p-2.5 rounded-xl flex items-center justify-center font-bold text-black text-[10px] ">
                 Create Event
               </div>
-              <div className="bg-[#CCFF00] p-2.5 rounded-xl flex items-center justify-center font-bold text-black text-[10px] cursor-pointer hover:opacity-90 transition-opacity">
+              <div className="bg-[#CCFF00] p-2.5 rounded-xl flex items-center justify-center font-bold text-black text-[10px] ">
                 Scan Tickets
               </div>
             </div>
 
             {/* Promo Card */}
-            <div className="bg-[#1A1A1A] rounded-xl p-3 mb-6 relative overflow-hidden group cursor-pointer border border-white/5">
+            <div className="bg-[#1A1A1A] rounded-xl p-3 mb-6 relative overflow-hidden group border border-white/5">
               <div className="relative z-10">
                 <div className="text-[#CCFF00] text-[10px] font-bold mb-0.5">AI Recommendation</div>
                 <div className="text-white text-[10px] font-bold mb-1.5">Tech Summit 2024</div>
