@@ -12,7 +12,7 @@ import { Button } from "./Button"
 import { Label } from "./label";
 import { Field, FieldGroup } from "./field";
 import { Progress } from "./progress";
-import { Heart, MapPin } from "lucide-react";
+import { ArrowLeft, Heart, MapPin } from "lucide-react";
 import { CATEGORIES } from "@/lib/data";
 import { useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
@@ -55,8 +55,26 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
     );
   };
 
-  const handleComplete = () => {
-
+  const handleComplete = async () => {
+try {
+  await completeOnBoarding({
+    location : {
+      city : location.city,
+      state : location.state,
+      country : location.country,
+    },
+    interests : selectedInterest,
+  });
+  toast.success("Welcome to AIvento!🎉");
+   // 👉 redirect bhi yahi karo
+    setTimeout(() => {
+      onComplete?.(); // parent handle karega redirect
+    }, 500);
+    
+} catch (error) {
+  toast.error("Failed to complete onboarding");
+  console.error(error);
+}
   }
 
   const handleNext = () => {
@@ -80,10 +98,10 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
     }
   };
 
-  const handleSave = () => {
-    if (!location.city || !location.state) return;
-    onComplete?.({ interests: selectedInterest, location });
-  };
+  // const handleSave = () => {
+  //   if (!location.city || !location.state) return;
+  //   onComplete?.({ interests: selectedInterest, location });
+  // };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,13 +110,21 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
         <div className="absolute top-0 left-0 w-full z-50">
           <Progress
             value={progress}
-            className="h-[2px] bg-white/10 rounded-none"
-            indicatorClassName="bg-purple-500 transition-all duration-500"
+            className="h-[3px] mt-2 bg-white/10 rounded-lg"
+            indicatorClassName="bg-gray-300 transition-all duration-500"
           />
         </div>
 
         <div className="p-6 pt-10">
           <DialogHeader className="mb-6 space-y-2">
+            <div className="top-3 left-0">
+            {step > 1 && (
+              <Button  onClick={() => setStep(step - 1)} className={"gap-2"}>
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+            )}
+            </div>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white">
               {step === 1 ? (
                 <>
@@ -155,8 +181,8 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
                   {/* Badge */}
                   <div
                     className={`
-      px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300
-      ${selectedInterest.length >= 3
+                         px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300
+                         ${selectedInterest.length >= 3
                         ? "bg-white text-black"
                         : "bg-gray-700 text-gray-300"}
     `}
@@ -174,74 +200,87 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
                 </div>
               </div>
             ) : (
-             <div className="space-y-4 py-2">
-  <FieldGroup className="space-y-4">
+              <div className="space-y-4 py-2">
+                <FieldGroup className="space-y-4">
 
-    {/* STATE FIRST */}
-    <Field className="space-y-2">
-      <Label className="text-sm font-semibold text-gray-300">State</Label>
-      <Select
-        value={location.state}
-        onValueChange={(value) =>
-          setLocation({ ...location, state: value, city: "" })
-        }
-      >
-        <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white w-full rounded-lg hover:bg-white/10 transition-colors">
-          <SelectValue placeholder="Select state" />
-        </SelectTrigger>
+                  {/* STATE FIRST */}
+                  <Field className="space-y-2">
+                    <Label className="text-sm font-semibold text-gray-300">State</Label>
+                    <Select
+                      value={location.state}
+                      onValueChange={(value) =>
+                        setLocation({ ...location, state: value, city: "" })
+                      }
+                    >
+                      <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white w-full rounded-lg hover:bg-white/10 transition-colors">
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
 
-        <SelectContent position="popper" className="bg-[#1A1A1A] border-white/10 text-white max-h-60 w-[var(--radix-select-trigger-width)]">
-          <SelectGroup>
-            {indianStates.map((state) => (
-              <SelectItem key={state.isoCode} value={state.name} className="focus:bg-purple-500/20 focus:text-white">
-                {state.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </Field>
+                      <SelectContent position="popper" className="bg-[#1A1A1A] border-white/10 text-white max-h-60 w-[var(--radix-select-trigger-width)]">
+                        <SelectGroup>
+                          {indianStates.map((state) => (
+                            <SelectItem key={state.isoCode} value={state.name} className="focus:bg-purple-500/20 focus:text-white">
+                              {state.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
 
-    {/* CITY */}
-    <Field className="space-y-2">
-      <Label className="text-sm font-semibold text-gray-300">City</Label>
-      <Select
-        value={location.city}
-        onValueChange={(value) =>
-          setLocation({ ...location, city: value })
-        }
-        disabled={!location.state}
-      >
-        <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white w-full rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50">
-          <SelectValue
-            placeholder={
-              location.state ? "Select city" : "Select state first"
-            }
-          />
-        </SelectTrigger>
+                  {/* CITY */}
+                  <Field className="space-y-2">
+                    <Label className="text-sm font-semibold text-gray-300">City</Label>
+                    <Select
+                      value={location.city}
+                      onValueChange={(value) =>
+                        setLocation({ ...location, city: value })
+                      }
+                      disabled={!location.state}
+                    >
+                      <SelectTrigger className="h-10 bg-white/5 border-white/10 text-white w-full rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50">
+                        <SelectValue
+                          placeholder={
+                            location.state ? "Select city" : "Select state first"
+                          }
+                        />
+                      </SelectTrigger>
 
-        <SelectContent position="popper" className="bg-[#1A1A1A] border-white/10 text-white max-h-60 w-[var(--radix-select-trigger-width)]">
-          <SelectGroup>
-            {cities.length > 0 ? (
-              cities.map((city) => (
-                <SelectItem key={city.name} value={city.name} className="focus:bg-purple-500/20 focus:text-white">
-                  {city.name}
-                </SelectItem>
-              ))
-            ) : (
-              <SelectItem value="no-city" disabled className="text-gray-500 italic">
-                No cities available
-              </SelectItem>
-            )}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </Field>
+                      <SelectContent position="popper" className="bg-[#1A1A1A] border-white/10 text-white max-h-60 w-[var(--radix-select-trigger-width)]">
+                        <SelectGroup>
+                          {cities.length > 0 ? (
+                            cities.map((city) => (
+                              <SelectItem key={city.name} value={city.name} className="focus:bg-purple-500/20 focus:text-white">
+                                {city.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="no-city" disabled className="text-gray-500 italic">
+                              No cities available
+                            </SelectItem>
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </Field>
 
-  </FieldGroup>
-</div>
+                </FieldGroup>
+              </div>
             )}
           </div>
+
+          {/* show your location after selected */}
+          {location.state && location.city && (
+            <div className="p-4 bg-purple-500/10 border border-purple-500/20 mt-4 rounded-lg">
+              <div className="flex items-center gap-3">
+                <MapPin className="flex items-center gap-3" />
+                <div>
+                  <p className="font-medium">Your Location</p>
+                  <p className="text-sm text-muted-foreground">{location.city},{location.state},{location.country}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <DialogFooter className="mt-8 flex gap-2 items-center justify-end">
             <Button
@@ -265,7 +304,7 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
             ) : (
               <Button
                 className="bg-white text-black font-bold px-6 rounded-lg h-9 text-sm hover:bg-gray-200 transition-all active:scale-95"
-                onClick={handleSave}
+                onClick={handleComplete}
                 disabled={!location.city || !location.state}
               >
                 Save changes

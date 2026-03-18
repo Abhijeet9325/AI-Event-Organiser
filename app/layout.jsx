@@ -59,8 +59,12 @@ export default function RootLayout({ children }) {
               <Header />
               <main className="relative z-10">
                 {children}
+                <Toaster position="bottom-right"
+                  richColors
+                  expand
+                  offset={40}
+                  className="z-[9999]" />
               </main>
-              <Toaster richColors/>
             </body>
           </ConvexClientProvider>
         </ClerkProvider>

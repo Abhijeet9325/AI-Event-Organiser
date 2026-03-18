@@ -30,9 +30,9 @@ export default function Home() {
             New: AI Event Personalization
           </div>
 
-          <h1 className={`text-4xl md:text-6xl leading-tight tracking-tight font-bold ${bricolageGrotesque.className}`}>
+          <h1 className={`text-4xl md:text-6xl leading-tight tracking-tight font-medium ${bricolageGrotesque.className}`}>
             Build smart events <br className="font-semibold" />
-            with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16d59e] font-extrabold to-emerald-700">AIvento</span>
+            with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16d59e] font-bold to-emerald-700">AIvento</span>
           </h1>
 
           <p className="text-gray-400 max-w-lg text-base md:text-lg leading-relaxed">
