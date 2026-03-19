@@ -2,6 +2,7 @@
 import { api } from '@/convex/_generated/api';
 import { useConvexQuery } from '@/hooks/use-convex-query';
 import { City, State } from 'country-state-city';
+import { useConvexMutation } from '@/hooks/use-convex-query';
 import { debounce } from 'lodash';
 import { ArrowRight, Calendar, Loader2, MapPin, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -18,8 +19,16 @@ const SearchLocationBar = () => {
     const [showSearchResult, setShowSearchResult] = useState(false)
     const searchRef = useRef(null);
 
+    // const [stateSearch, setStateSearch] = useState("");
+    // const [citySearch, setCitySearch] = useState("");
+
     const [selectedState, setSelectedState] = useState("");
     const [selectedCity, setSelectedCity] = useState("")
+
+
+    const { mutate: updateLocation } = useConvexMutation(
+        api.users.completeOnBoarding
+    );
 
     const { data: currentUser, isLoading } = useConvexQuery(
         api.users.getCurrentUser
@@ -52,8 +61,8 @@ const SearchLocationBar = () => {
 
     const handleSearchInput = (e) => {
         const value = e.target.value;
-        debouncedSetQuery(value);
         setShowSearchResult(value.length >= 2)
+        debouncedSetQuery(value);
     }
 
     const handleEventClick = (slug) => {
@@ -79,6 +88,12 @@ const SearchLocationBar = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [])
 
+    useEffect(() => {
+        if (searchQuery.length >= 2) {
+            setShowSearchResult(true);
+        }
+    }, [searchQuery]);
+
     const handleLocationSelect = async (city, state) => {
         try {
             if (currentUser?.interests && currentUser?.location) {
@@ -94,9 +109,17 @@ const SearchLocationBar = () => {
         }
     }
 
+    // const filteredStates = indianStates.filter((state) =>
+    //     state.name.toLowerCase().includes(stateSearch.toLowerCase())
+    // );
+
+    // const filteredCities = cities.filter((city) =>
+    //     city.name.toLowerCase().includes(citySearch.toLowerCase())
+    // );
+
     return (
         <div className='flex items-center w-full max-w-3xl mx-4' ref={searchRef}>
-            <div className='relative flex flex-1 items-center bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-white/20 transition-all duration-300'>
+            <div className='relative flex flex-1 items-center bg-white/5 border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300'>
                 {/* Search Part */}
                 <div className='relative flex-1 flex items-center pl-3 min-w-[200px]'>
                     <Search className="w-4 h-4 text-zinc-500" />
@@ -127,6 +150,14 @@ const SearchLocationBar = () => {
                         <SelectValue placeholder="State" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                        {/* 🔍 SEARCH BAR */}
+                        {/* <div className="p-2 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
+                            <Input
+                                placeholder="Search state..."
+                                className="h-8 text-xs bg-white/5 border-none focus:ring-0"
+                                onChange={(e) => setStateSearch(e.target.value)}
+                            />
+                        </div> */}
                         <SelectGroup>
                             {indianStates.map((state) => (
                                 <SelectItem key={state.isoCode} value={state.name} className="focus:bg-white/10 focus:text-white text-xs">
@@ -153,6 +184,14 @@ const SearchLocationBar = () => {
                         <SelectValue placeholder="City" />
                     </SelectTrigger>
                     <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                        {/* 🔍 SEARCH */}
+                        {/* <div className="p-2 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
+                            <Input
+                                placeholder="Search city..."
+                                className="h-8 text-xs bg-white/5 border-none focus:ring-0"
+                                onChange={(e) => setCitySearch(e.target.value)}
+                            />
+                        </div> */}
                         <SelectGroup>
                             {cities.map((city) => (
                                 <SelectItem key={city.name} value={city.name} className="focus:bg-white/10 focus:text-white text-xs">
@@ -209,7 +248,7 @@ const SearchLocationBar = () => {
                                     ))}
                                 </div>
                             </div>
-                        ) : (
+                        ) : searchResults && searchResults.length === 0 && searchQuery.trim().length >= 2 ? (
                             <div className='p-10 text-center space-y-3'>
                                 <div className='w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4'>
                                     <Search className='w-8 h-8 text-zinc-600' />
@@ -217,7 +256,7 @@ const SearchLocationBar = () => {
                                 <p className='text-base font-bold text-white'>No events found</p>
                                 <p className='text-xs text-zinc-500 leading-relaxed max-w-[200px] mx-auto'>Try searching with a different keyword or category</p>
                             </div>
-                        )}
+                        ) : null}
                     </div>
                 )}
             </div>

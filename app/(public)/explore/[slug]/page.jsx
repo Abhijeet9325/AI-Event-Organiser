@@ -11,7 +11,7 @@ import EventCard from '@/components/ui/event-card';
 const dynamicExplorePage = () => {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug
+ const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
   // check if its valid category
   const categoryInfo = CATEGORIES.find((cat) => cat.id === slug);
@@ -53,11 +53,11 @@ const dynamicExplorePage = () => {
     return (
       <div className='min-h-screen'>
         <div className='pb-12'>
-          <div className='flex items-center gap-6 mb-6'>
-            <div className='text-7xl'>{categoryInfo.icon}</div>
+          <div className='flex items-center gap-4 mb-6'>
+            <div className='text-4xl'>{categoryInfo.icon}</div>
             <div>
-              <h1 className='text-5xl font-bold text-white'>{categoryInfo.label}</h1>
-              <p className='text-xl mt-2 text-muted-foreground'>{categoryInfo.description}</p>
+              <h1 className='text-3xl font-bold text-white'>{categoryInfo.label}</h1>
+              <p className='text-lg mt-2 text-gray-500 '>{categoryInfo.description}</p>
             </div>
           </div>
           
@@ -89,7 +89,7 @@ const dynamicExplorePage = () => {
       <div className='pb-12'>
         <div className='mb-8'>
           <h1 className='text-5xl font-bold text-white capitalize'>Events in {city}</h1>
-          <p className='text-xl mt-2 text-muted-foreground'>{state}India</p>
+          <p className='text-xl mt-2 text-muted-foreground'> {state} India</p>
         </div>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
