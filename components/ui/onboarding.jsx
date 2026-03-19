@@ -40,7 +40,6 @@ export function OnboardingModal({ isOpen, onClose, onComplete }) {
     const selectedState = indianStates.find((s) =>
       s.name === location.state
     )
-
     if (!selectedState) return [];
     return City.getCitiesOfState("IN", selectedState.isoCode)
   }, [location.state, indianStates])

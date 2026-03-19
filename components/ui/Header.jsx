@@ -1,12 +1,11 @@
 "use client";
-import { Building, Search, Ticket } from "lucide-react";
+import { Building, Search, Ticket, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Authenticated } from "convex/react";
 import { Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
 import { Button } from "@/components/ui/Button"
-import { Plus } from "lucide-react";
 import { Bricolage_Grotesque } from "next/font/google";
 
 import {
@@ -16,11 +15,12 @@ import {
 import { useStoreUser } from "@/hooks/use-store-user";
 import OnboardingModal from "./onboarding";
 import { UseOnBoarding, useOnBoarding } from "@/hooks/use-onboarding";
+import SearchLocationBar from "../search-location-bar";
 
 
-const bricolageGrotesque= Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const bricolageGrotesque = Bricolage_Grotesque({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
 });
 const Header = () => {
 
@@ -28,7 +28,7 @@ const Header = () => {
     const {
         showOnBoarding,
         handleOnBoardingComplete,
-        handleOnBoardingSkip,} = UseOnBoarding()
+        handleOnBoardingSkip, } = UseOnBoarding()
     return (
         <>
             <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-zinc-950/30  border-b border-white/5">
@@ -49,25 +49,8 @@ const Header = () => {
                     </Link>
 
                     {/* Search Bar */}
-                    <div className="hidden md:flex items-center bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2 w-[400px] focus-within:border-purple-500/50 transition-all duration-300">
-
-                        <Search className="w-4 h-4 text-gray-500 mr-2" />
-
-                        <input
-                            type="text"
-                            placeholder="Search events, cities..."
-                            className="bg-transparent outline-none text-sm text-white placeholder-gray-500 w-full"
-                        />
-
-                        {/* Divider */}
-                        <div className="h-4 w-px bg-white/10 mx-3"></div>
-
-                        {/* Quick Selects */}
-                        <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
-                            <span className="hover:text-white cursor-pointer transition-colors">Pune</span>
-                            <span className="text-white/20">|</span>
-                            <span className="hover:text-white cursor-pointer transition-colors">Mumbai</span>
-                        </div>
+                    <div className="flex-1 flex justify-center max-w-2xl">
+                        <SearchLocationBar />
                     </div>
 
                     {/* Right Side */}
@@ -83,29 +66,29 @@ const Header = () => {
 
                         <div className="h-4 w-px bg-white/10"></div>
                         <Authenticated>
-                            <Button size= "sm" variant="outline" asChild className = "flex gap-2 bg-white text-black mr-4">
+                            <Button size="sm" variant="outline" asChild className="flex gap-2 bg-white text-black mr-4">
                                 <Link href={"/create-events"}>
-                                <Plus className = "w-4 h-4" />
-                                
-                                <span className="hidden sm:inline font-semibold">Create Event</span >
+                                    <Plus className="w-4 h-4" />
+
+                                    <span className="hidden sm:inline font-semibold">Create Event</span >
                                 </Link>
                             </Button>
                             <UserButton>
                                 <UserButton.MenuItems>
                                     <UserButton.Link
-                                    label="My Tickets"
-                                    labelIcon = {<Ticket size={16}/>}
-                                    href="/my-tickets"
+                                        label="My Tickets"
+                                        labelIcon={<Ticket size={16} />}
+                                        href="/my-tickets"
                                     />
                                     <UserButton.Link
-                                    label="My Events"
-                                    labelIcon = {<Building size={16}/>}
-                                    href="/my-events"
+                                        label="My Events"
+                                        labelIcon={<Building size={16} />}
+                                        href="/my-events"
                                     />
-                                    
-                                    <UserButton.Action label = "manageAccount"/>
+
+                                    <UserButton.Action label="manageAccount" />
                                 </UserButton.MenuItems>
-                                 </UserButton>
+                            </UserButton>
                         </Authenticated>
                         <Unauthenticated>
                             <SignInButton mode="modal">
@@ -115,21 +98,21 @@ const Header = () => {
                             </SignInButton>
                         </Unauthenticated>
                     </div>
-                        
+
                 </div>
                 {/* Loader */}
-               {isLoading &&( <div className="absolute bottom-0 left-0 w-full">
+                {isLoading && (<div className="absolute bottom-0 left-0 w-full">
                     <BarLoader width={"100%"} color="#a855f7" />
                 </div>)}
             </header>
 
             {/* Modals*/}
             <OnboardingModal
-            isOpen={showOnBoarding}
-            onClose={handleOnBoardingSkip}
-            onComplete={handleOnBoardingComplete}
+                isOpen={showOnBoarding}
+                onClose={handleOnBoardingSkip}
+                onComplete={handleOnBoardingComplete}
             />
-        
+
         </>
     );
 }
