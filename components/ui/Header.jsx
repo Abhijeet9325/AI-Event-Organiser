@@ -14,7 +14,7 @@ import {
 } from '@clerk/nextjs'
 import { useStoreUser } from "@/hooks/use-store-user";
 import OnboardingModal from "./onboarding";
-import { UseOnBoarding, useOnBoarding } from "@/hooks/use-onboarding";
+import { UseOnBoarding } from "@/hooks/use-onboarding";
 import SearchLocationBar from "../search-location-bar";
 
 

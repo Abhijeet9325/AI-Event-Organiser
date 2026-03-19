@@ -1,6 +1,7 @@
 import { ArrowRight, Bell, Calendar, CreditCard, LayoutGrid, Search, Ticket, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Bricolage_Grotesque } from "next/font/google";
+import { Button } from "@/components/ui/Button";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -41,9 +42,11 @@ export default function Home() {
           </p>
 
           <div className="flex gap-3 flex-wrap">
-            <button className="bg-white text-black hover:bg-gray-100  px-4 py-0 rounded-sm font-semibold text-sm transition-all active:scale-95 shadow-[0_0_15px_rgba(34,197,94,0.25)]">
+            <Link href={"/create-events"}>
+            <Button className="bg-white text-black hover:bg-gray-100  px-4 py-0 rounded-sm font-semibold text-sm transition-all active:scale-95 shadow-[0_0_15px_rgba(34,197,94,0.25)]">
               Get Started
-            </button>
+            </Button>
+            </Link>
 
             <Link
               href="/explore"

@@ -16,7 +16,7 @@ export function UseOnBoarding() {
 
     useEffect(() => {
         if (isLoading || !currentUser) return;
-        if (!currentUser.hasCompleteOnBoarding) {
+        if (!currentUser.hasCompletedOnBoarding) {
             // Check if current page requires onboarding
 
             const requiresOnboarding = ATTENDEE_PAGES.some((page) =>
@@ -46,7 +46,7 @@ export function UseOnBoarding() {
         setShowOnBoarding,
         handleOnBoardingComplete,
         handleOnBoardingSkip,
-        needsOnBoarding : currentUser && !currentUser.hasCompleteOnBoarding
+        needsOnBoarding : currentUser && !currentUser.hasCompletedOnBoarding
     }
 
 }
