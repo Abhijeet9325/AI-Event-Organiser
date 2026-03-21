@@ -1,5 +1,5 @@
 "use client";
-import { Building, Search, Ticket, Plus } from "lucide-react";
+import { Building, Search, Ticket, Plus, Crown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Authenticated } from "convex/react";
@@ -10,12 +10,16 @@ import { Bricolage_Grotesque } from "next/font/google";
 
 import {
     SignInButton,
+    useAuth,
     UserButton,
 } from '@clerk/nextjs'
 import { useStoreUser } from "@/hooks/use-store-user";
 import OnboardingModal from "./onboarding";
 import { UseOnBoarding } from "@/hooks/use-onboarding";
 import SearchLocationBar from "../search-location-bar";
+import { Badge } from "./badge";
+import UpgradeModal from "../UpgradeModal";
+import { useState } from "react";
 
 
 const bricolageGrotesque = Bricolage_Grotesque({
@@ -25,10 +29,15 @@ const bricolageGrotesque = Bricolage_Grotesque({
 const Header = () => {
 
     const { isLoading } = useStoreUser();
+
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const {
         showOnBoarding,
         handleOnBoardingComplete,
         handleOnBoardingSkip, } = UseOnBoarding()
+
+    const { has } = useAuth();
+    const hasPro = has?.({ plan: "pro" })
     return (
         <>
             <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-zinc-950/30  border-b border-white/5">
@@ -45,8 +54,19 @@ const Header = () => {
                                 className=" shrink-0 filter invert"
                             />
                             <span className={`text-white font-medium ${bricolageGrotesque.className}`}>AIvento</span>
+
+                            {/* Pro Badge */}
+
+                            {hasPro && (
+                                <Badge className="bg-gradient-to-r from-green-600 rounded-full to-gray-400  text-white ml-2">
+                                    <Crown className="w-3 h-3" />
+                                    Pro
+                                </Badge>
+                            )}
                         </div>
+
                     </Link>
+
 
                     {/* Search Bar */}
                     <div className="flex-1 flex justify-center max-w-2xl">
@@ -59,10 +79,14 @@ const Header = () => {
                         <Link href="/explore" className="text-gray-400 hover:text-white transition-colors">
                             Explore
                         </Link>
-
-                        <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                            Pricing
-                        </Link>
+                        {!hasPro && (
+                            <button 
+                                onClick={() => setShowUpgradeModal(true)}
+                                className="text-gray-400 hover:text-white transition-colors"
+                            >
+                                Pricing
+                            </button>
+                        )}
 
                         <div className="h-4 w-px bg-white/10"></div>
                         <Authenticated>
@@ -111,6 +135,13 @@ const Header = () => {
                 isOpen={showOnBoarding}
                 onClose={handleOnBoardingSkip}
                 onComplete={handleOnBoardingComplete}
+            />
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+            isOpen = {showUpgradeModal}
+            onClose = {()=>setShowUpgradeModal(false)}
+            trigger = "header"
             />
 
         </>
