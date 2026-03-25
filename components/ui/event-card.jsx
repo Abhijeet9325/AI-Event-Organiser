@@ -5,7 +5,12 @@ import Image from 'next/image'
 import { format } from 'date-fns'
 import { MapPin, Users, Calendar } from 'lucide-react'
 
+import { useAuth } from '@clerk/nextjs'
+
 const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "grid", className = "" }) => {
+    const { has } = useAuth();
+    const hasPro = has?.({ plan: "pro" })
+    
     if (variant === "list") {
         return (
             <Card
@@ -22,13 +27,13 @@ const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "g
                                 className='object-cover group-hover:scale-110 transition-transform duration-500'
                             />
                         ) : (
-                            <div className='absolute inset-0 flex items-center justify-center text-2xl' style={{ backgroundColor: event.themeColor }}>
+                            <div className='absolute inset-0 flex items-center justify-center text-2xl' style={{ backgroundColor: event.themeColor || (hasPro ? "#4c1d95" : "#1e3a8a") }}>
                                 {getCategoryIcon(event.category)}
                             </div>
                         )}
                     </div>
                     <div className='flex-1 min-w-0 flex flex-col justify-center gap-1'>
-                        <h3 className='font-bold text-sm text-white group-hover:text-purple-400 transition-colors line-clamp-2 leading-snug'>
+                        <h3 className={`font-bold text-sm text-white transition-colors line-clamp-2 leading-snug ${hasPro ? "group-hover:text-purple-400" : "group-hover:text-blue-400"}`}>
                             {event.title}
                         </h3>
                         <p className='text-[11px] text-gray-400 font-medium'>
@@ -67,7 +72,7 @@ const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "g
                         className='object-cover group-hover:scale-105 transition-transform duration-300'
                     />
                 ) : (
-                    <div className='absolute inset-0 flex items-center justify-center text-4xl' style={{ backgroundColor: event.themeColor }}>
+                    <div className='absolute inset-0 flex items-center justify-center text-4xl' style={{ backgroundColor: event.themeColor || (hasPro ? "#4c1d95" : "#1e3a8a") }}>
                         {getCategoryIcon(event.category)}
                     </div>
                 )}
@@ -87,7 +92,7 @@ const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "g
                     </div>
                 </div>
 
-                <h3 className='font-bold text-lg text-white group-hover:text-purple-400 transition-colors line-clamp-2 leading-tight'>
+                <h3 className={`font-bold text-lg text-white transition-colors line-clamp-2 leading-tight ${hasPro ? "group-hover:text-purple-400" : "group-hover:text-blue-400"}`}>
                     {event.title}
                 </h3>
 

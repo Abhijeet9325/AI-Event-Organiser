@@ -44,6 +44,8 @@ export default defineSchema({
         // Date and Time
         startDate: v.number(),
         endDate: v.number(),
+        startTime: v.optional(v.string()),
+        endTime: v.optional(v.string()),
         timeZone: v.string(),
 
         // Location
@@ -52,14 +54,14 @@ export default defineSchema({
         address: v.optional(v.string()),
         city: v.string(),
         state: v.optional(v.string()),
-        country : v.string(),
+        country: v.string(),
 
         // Capacity and ticketing
 
         capacity: v.number(),
         ticketType: v.union(v.literal("free"), v.literal("paid")),
         ticketPrice: v.optional(v.number()), // paid at event offline
-        registrationCount: v.number(),
+        registrationCount: v.optional(v.number()),
 
         // Customization
 
@@ -81,25 +83,25 @@ export default defineSchema({
         userId: v.id("users"),
 
         // Attendee info
-        attendeeName : v.string(),
-        attendeeEmail : v.string(),
+        attendeeName: v.string(),
+        attendeeEmail: v.string(),
 
         // Qr code for entry
-        qrCode : v.string(), // unique id for QR
+        qrCode: v.string(), // unique id for QR
 
         // Check-in
-        checkedIn : v.boolean(),
-        checkedInAt : v.optional(v.number()),
+        checkedIn: v.boolean(),
+        checkedInAt: v.optional(v.number()),
 
         // Status
-        status: v.union(v.literal("confirmed"),v.literal("cancelled")),
+        status: v.union(v.literal("confirmed"), v.literal("cancelled")),
 
-        registeredAt : v.number(),
+        registeredAt: v.number(),
 
     })
-    .index("by_event",["eventId"])
-    .index("by_user",["userId"])
-    .index("by_event_user",["eventId","userId"])
-    .index("by_qr_code",["qrCode"]),
+        .index("by_event", ["eventId"])
+        .index("by_user", ["userId"])
+        .index("by_event_user", ["eventId", "userId"])
+        .index("by_qr_code", ["qrCode"]),
 
 })

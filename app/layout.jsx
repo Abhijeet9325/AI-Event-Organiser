@@ -7,6 +7,7 @@ import { shadesOfPurple } from '@clerk/themes'
 
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import ThemeWrapper from "@/components/ui/ThemeWrapper";
 
 export const metadata = {
   title: "AI Event Organizer",
@@ -49,22 +50,24 @@ export default function RootLayout({ children }) {
           }}>
           <ConvexClientProvider>
             <body className={`relative bg-zinc-950 text-white overflow-x-hidden h-full ${inter.className}`}>
-              {/* Background Image with Overlay */}
-              <div className="fixed inset-0 pointer-events-none -z-10">
-                {/* Background Shadow Overlay */}
-                <div className="absolute inset-0 bg-linear-to-b from-transparent via-zinc-950/80 to-zinc-950" />
-              </div>
+              <ThemeWrapper>
+                {/* Background Image with Overlay */}
+                <div className="fixed inset-0 pointer-events-none -z-10">
+                  {/* Background Shadow Overlay */}
+                  <div className="absolute inset-0 bg-linear-to-b from-transparent via-zinc-950/80 to-zinc-950" />
+                </div>
 
-              {/* Main Content */}
-              <Header />
-              <main className="relative z-10">
-                {children}
-                <Toaster position="bottom-right"
-                  richColors
-                  expand
-                  offset={40}
-                  className="z-[9999]" />
-              </main>
+                {/* Main Content */}
+                <Header />
+                <main className="relative z-10">
+                  {children}
+                  <Toaster position="bottom-right"
+                    richColors
+                    expand
+                    offset={40}
+                    className="z-[9999]" />
+                </main>
+              </ThemeWrapper>
             </body>
           </ConvexClientProvider>
         </ClerkProvider>

@@ -86,7 +86,7 @@ const SearchLocationBar = () => {
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (searchQuery.length >= 2) {
