@@ -2,7 +2,7 @@
 import { api } from '@/convex/_generated/api';
 import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query';
 import { useAuth } from '@clerk/nextjs';
-import React, { useMemo, useState, useRef } from 'react'
+import React, { useMemo, useState} from 'react'
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from 'zod';
@@ -21,9 +21,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon, Clock, MapPin, Users, Ticket, Sparkles, Image as ImageIcon, Loader2, ArrowRight, Palette, Plus, Crown } from 'lucide-react';
-import { CATEGORIES, getCategoryIcon } from '@/lib/data';
+import { CATEGORIES } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { AiEventCreator } from './_components/ai-event-creator';
+
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const eventSchema = z.object({
@@ -103,7 +105,6 @@ const CreateEvent = () => {
     ];
 
     const onSubmit = async (data) => {
-        console.log(onSubmit)
         try {
             const formattedData = {
                 ...data,
@@ -116,7 +117,7 @@ const CreateEvent = () => {
             };
             const { eventId, slug } = await createEvent(formattedData);
             toast.success("Event created successfully!");
-            router.push(`/my-events`);
+            router.push(`/event/${slug}`);
 
         } catch (error) {
             if (error.message?.includes("Upgrade to Pro")) {
@@ -127,22 +128,20 @@ const CreateEvent = () => {
         }
     };
 
-    const generateAIContent = async () => {
-        if (!title || title.length < 5) {
-            toast.error("Please enter a title first to use AI assist");
-            return;
-        }
-        setIsGenerating(true);
-        // Simulate AI generation for now - in real app, call an edge function/mutation
-        setTimeout(() => {
-            setValue("description", `Join us for an incredible session focused on ${title}! This event is designed to bring together community members and experts to share knowledge, network, and explore new horizons. Don't miss out on this opportunity to learn and grow.`);
-            setIsGenerating(false);
-            toast.success("Description generated!");
-        }, 1500);
-    };
+const handleAIGenerated = (generatedData) => {
+    console.log("AI DATA:", generatedData) // 👈 must
+    setValue("title", generatedData.title)
+    setValue("description", generatedData.description)
+    setValue("category", generatedData.category)
+    setValue("capacity", generatedData.suggestedCapacity)
+    setValue("ticketType", generatedData.suggestedTicketType)
+    toast.success("Event details filled! Customize as needed")
+}
+
+
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white pt-24 pb-20 px-6 relative overflow-hidden">
+        <div style={{ backgroundColor: themeColor }} className="min-h-screen text-white pt-24 pb-20 px-6 relative overflow-hidden">
             {/* Theme Background Accents */}
             <div className="fixed inset-0 pointer-events-none -z-10">
                 <div
@@ -203,7 +202,7 @@ const CreateEvent = () => {
                             <div className="space-y-4">
                                 <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] ml-1">Live Preview</Label>
                                 <div
-                                    className="relative bg-zinc-900 border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-500 group"
+                                    className="relative bg-zinc-900 border border-white/5 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 group"
                                     style={{ borderColor: `${themeColor}20` }}
                                 >
                                     {/* Cover Image Preview */}
@@ -281,12 +280,12 @@ const CreateEvent = () => {
                                     </div>
 
                                     {/* Theme Accent Glow */}
-                                    <div className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-20 transition-colors duration-700" style={{ backgroundColor: themeColor }} />
+                                    <div className="absolute -bottom-20 -right-20 w-40 h-40 rounded-lg blur-[80px] pointer-events-none opacity-20 transition-colors duration-700" style={{ backgroundColor: themeColor }} />
                                 </div>
                             </div>
 
                             {/* THEME PICKER */}
-                            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+                            <div className="bg-white/5 border border-white/10 rounded-lg p-6 backdrop-blur-xl">
                                 <div className="flex items-center gap-2 mb-6">
                                     <Palette className="w-4 h-4" style={{ color: themeColor }} />
                                     <h3 className="text-sm font-bold text-white uppercase tracking-wider">Theme & Identity</h3>
@@ -377,16 +376,9 @@ const CreateEvent = () => {
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between ml-1">
                                         <Label className="text-xs font-bold text-zinc-400">Description</Label>
-                                        <button
-                                            type="button"
-                                            onClick={generateAIContent}
-                                            disabled={isGenerating}
-                                            className="text-[10px] font-black uppercase tracking-widest hover:opacity-80 transition-all flex items-center gap-1.5 disabled:opacity-50"
-                                            style={{ color: themeColor }}
-                                        >
-                                            {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                                            AI Assist
-                                        </button>
+
+                                        <AiEventCreator onEventGenerated={handleAIGenerated} />
+
                                     </div>
                                     <Textarea
                                         {...register("description")}
@@ -408,10 +400,10 @@ const CreateEvent = () => {
                                         control={control}
                                         render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white rounded-2xl focus:ring-0 shadow-none hover:bg-white/10 transition-all">
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white px-4 rounded-lg focus:ring-0 shadow-none hover:bg-white/10 transition-all">
                                                     <SelectValue placeholder="What kind of event is it?" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-80">
+                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-lg p-2 max-h-80">
                                                     <SelectGroup>
                                                         {CATEGORIES.map((cat) => (
                                                             <SelectItem key={cat.id} value={cat.id} className="rounded-xl focus:bg-white/10 focus:text-white py-3">
@@ -429,7 +421,7 @@ const CreateEvent = () => {
                         </div>
 
                         {/* SECTION 2: DATE & LOCATION */}
-                        <div className="space-y-8 rounded-[2.5rem] p-8 md:p-12 ">
+                        <div className="space-y-8 rounded-lg p-8 md:p-12 ">
                             <div className="flex items-center gap-3 mb-2">
                                 <div
                                     className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors duration-300"
@@ -452,12 +444,12 @@ const CreateEvent = () => {
                                         render={({ field }) => (
                                             <Popover>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className={cn("h-14 w-full bg-white/5 border-white/10 text-white rounded-2xl justify-start font-bold hover:bg-white/10 hover:text-white transition-all", !field.value && "text-zinc-600")}>
+                                                    <Button variant="outline" className={cn("h-14 w-full bg-white/5 border-white/10 text-white rounded-lg justify-start font-bold hover:bg-white/10 hover:text-white transition-all", !field.value && "text-zinc-600")}>
                                                         <CalendarIcon className="mr-3 h-5 w-5 text-zinc-700" />
                                                         {field.value ? format(field.value, "PPP") : "Pick a date"}
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-2xl shadow-2xl" align="start">
+                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-lg shadow-2xl" align="start">
                                                     <Calendar
                                                         mode="single"
                                                         selected={field.value}
@@ -480,7 +472,7 @@ const CreateEvent = () => {
                                         <Input
                                             {...register("startTime")}
                                             type="time"
-                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-2xl focus:border-purple-500/50 transition-all shadow-none"
+                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-lg focus:border-purple-500/50 transition-all shadow-none"
                                         />
                                     </div>
                                     {errors.startTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.startTime.message}</p>}
@@ -500,7 +492,7 @@ const CreateEvent = () => {
                                                         variant="outline"
                                                         disabled={!startDate}
                                                         className={cn(
-                                                            "h-14 w-full bg-white/5 border-white/10 text-white rounded-2xl justify-start font-bold hover:bg-white/10 hover:text-white transition-all",
+                                                            "h-14 w-full bg-white/5 border-white/10 text-white rounded-lg justify-start font-bold hover:bg-white/10 hover:text-white transition-all",
                                                             !field.value && "text-zinc-600",
                                                             !startDate && "opacity-30 cursor-not-allowed"
                                                         )}
@@ -509,7 +501,7 @@ const CreateEvent = () => {
                                                         {field.value ? format(field.value, "PPP") : startDate ? "Pick an end date" : "Select start date first"}
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-2xl shadow-2xl" align="start">
+                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-lg shadow-2xl" align="start">
                                                     <Calendar
                                                         mode="single"
                                                         selected={field.value}
@@ -532,7 +524,7 @@ const CreateEvent = () => {
                                         <Input
                                             {...register("endTime")}
                                             type="time"
-                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-2xl focus:border-purple-500/50 transition-all shadow-none"
+                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-lg focus:border-purple-500/50 transition-all shadow-none"
                                         />
                                     </div>
                                     {errors.endTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.endTime.message}</p>}
@@ -547,10 +539,10 @@ const CreateEvent = () => {
                                         control={control}
                                         render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white rounded-2xl focus:ring-0 shadow-none hover:bg-white/10 transition-all">
+                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white px-4 rounded-lg focus:ring-0 shadow-none hover:bg-white/10 transition-all">
                                                     <SelectValue placeholder="Select State" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60">
+                                                <SelectContent className="bg-zinc-950 border-white/10 text-white px-4 rounded-lg p-2 max-h-60">
                                                     <SelectGroup>
                                                         {indianStates.map((st) => (
                                                             <SelectItem key={st.isoCode} value={st.name} className="rounded-xl focus:bg-white/10 focus:text-white py-3">
@@ -591,7 +583,7 @@ const CreateEvent = () => {
                         </div>
 
                         {/* SECTION 3: TICKETS & CAPACITY */}
-                        <div className="space-y-8 rounded-[2.5rem] p-8 md:p-12 ">
+                        <div className="space-y-8 rounded-lg p-8 md:p-12 ">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
                                     <div
@@ -614,7 +606,7 @@ const CreateEvent = () => {
                                         name="ticketType"
                                         control={control}
                                         render={({ field }) => (
-                                            <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-2xl">
+                                            <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-lg">
                                                 <button
                                                     type="button"
                                                     onClick={() => field.onChange("free")}
@@ -699,7 +691,7 @@ const CreateEvent = () => {
                             <Button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full h-16 bg-white text-black hover:bg-zinc-200 rounded-[1.5rem] font-black text-xl tracking-tight transition-all active:scale-[0.98] shadow-2xl shadow-white/5 flex items-center justify-center gap-4"
+                                className="w-[60vh] h-8 bg-white text-black hover:bg-zinc-200 rounded-lg font-semibold text-lg tracking-tight transition-all active:scale-[0.98]  flex items-center justify-center gap-4"
                             >
                                 {isLoading ? (
                                     <>

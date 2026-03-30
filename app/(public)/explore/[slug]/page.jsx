@@ -106,7 +106,7 @@ const dynamicExplorePage = () => {
             <div className='col-span-full py-20 text-center'>
               <div className='text-6xl mb-4'>📍</div>
               <h3 className='text-2xl font-bold text-white'>No events found in {city}</h3>
-              <p className='text-gray-400 mt-2'>Be the first to create an event in this location!</p>
+              <p className='text-gray-400 text-sm mt-2'>Be the first to create an event in this location!</p>
             </div>
           )}
         </div>

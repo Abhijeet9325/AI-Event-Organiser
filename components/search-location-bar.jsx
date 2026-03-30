@@ -96,7 +96,7 @@ const SearchLocationBar = () => {
 
     const handleLocationSelect = async (city, state) => {
         try {
-            if (currentUser?.interests && currentUser?.location) {
+            if (currentUser?.interests) {
                 await updateLocation({
                     location: { city, state, country: "India" },
                     interests: currentUser.interests
@@ -141,9 +141,6 @@ const SearchLocationBar = () => {
                     onValueChange={(value) => {
                         setSelectedState(value);
                         setSelectedCity("");
-                        if (value && selectedState) {
-                            handleLocationSelect(value, selectedState)
-                        }
                     }}
                 >
                     <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[13px] h-9 hover:text-white transition-colors shadow-none rounded-none">
@@ -177,6 +174,7 @@ const SearchLocationBar = () => {
                     onValueChange={(value) => {
                         setSelectedCity(value);
                         handleLocationChange(selectedState, value);
+                        handleLocationSelect(value, selectedState);
                     }}
                     disabled={!selectedState}
                 >

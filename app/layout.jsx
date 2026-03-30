@@ -6,8 +6,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from '@clerk/themes'
 
 import { Inter } from "next/font/google";
-import { Toaster } from "sonner";
 import ThemeWrapper from "@/components/ui/ThemeWrapper";
+import SonnerToaster from "@/components/ui/SonnerToaster";
 
 export const metadata = {
   title: "AI Event Organizer",
@@ -21,13 +21,7 @@ const inter = Inter({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning className="">
-
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
+      <body className={`relative bg-zinc-950 text-white overflow-x-hidden h-full ${inter.className}`}>
         <ClerkProvider
           appearance={{
             theme: shadesOfPurple,
@@ -47,9 +41,15 @@ export default function RootLayout({ children }) {
             variables: {
               fontSize: '0.85rem',
             }
-          }}>
+          }}
+        >
           <ConvexClientProvider>
-            <body className={`relative bg-zinc-950 text-white overflow-x-hidden h-full ${inter.className}`}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
               <ThemeWrapper>
                 {/* Background Image with Overlay */}
                 <div className="fixed inset-0 pointer-events-none -z-10">
@@ -61,17 +61,13 @@ export default function RootLayout({ children }) {
                 <Header />
                 <main className="relative z-10">
                   {children}
-                  <Toaster position="bottom-right"
-                    richColors
-                    expand
-                    offset={40}
-                    className="z-[9999]" />
+                  <SonnerToaster />
                 </main>
               </ThemeWrapper>
-            </body>
+            </ThemeProvider>
           </ConvexClientProvider>
         </ClerkProvider>
-      </ThemeProvider>
+      </body>
     </html>
   );
 }

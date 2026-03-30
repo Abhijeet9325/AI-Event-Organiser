@@ -126,23 +126,27 @@ const Header = () => {
                 </div>
                 {/* Loader */}
                 {isLoading && (<div className="absolute bottom-0 left-0 w-full">
-                    <BarLoader width={"100%"} color="#a855f7" />
+                    <BarLoader  width={"100%"} color="#a855f7" />
                 </div>)}
             </header>
 
             {/* Modals*/}
-            <OnboardingModal
-                isOpen={showOnBoarding}
-                onClose={handleOnBoardingSkip}
-                onComplete={handleOnBoardingComplete}
-            />
+            {showOnBoarding && (
+                <OnboardingModal
+                    isOpen={showOnBoarding}
+                    onClose={handleOnBoardingSkip}
+                    onComplete={handleOnBoardingComplete}
+                />
+            )}
 
             {/* Upgrade Modal */}
-            <UpgradeModal
-            isOpen = {showUpgradeModal}
-            onClose = {()=>setShowUpgradeModal(false)}
-            trigger = "header"
-            />
+            {showUpgradeModal && (
+                <UpgradeModal
+                    isOpen={showUpgradeModal}
+                    onClose={() => setShowUpgradeModal(false)}
+                    trigger="header"
+                />
+            )}
 
         </>
     );

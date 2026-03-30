@@ -1,17 +1,16 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog'
-import { Sparkles, CheckCircle2 } from 'lucide-react'
-import { PricingTable } from '@clerk/clerk-react'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog'
+import { Sparkles, CheckCircle2, X } from 'lucide-react'
+import { PricingTable } from '@clerk/nextjs'
 import { Button } from './ui/Button'
 
 const UpgradeModal = ({ isOpen, onClose, trigger = "limit" }) => {
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-           <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto  bg-[#0A0A0A] border-white/5 p-0 rounded-[2rem] shadow-2xl">
+            <DialogContent showCloseButton={false} className="sm:max-w-xl max-h-[90vh] overflow-y-auto  bg-[#0A0A0A] border-white/5 p-0 rounded-[2rem] shadow-2xl">
                 {/* Background decorative glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-purple-500/5 blur-[120px] pointer-events-none" />
-                
-              <div className="relative z-10 p-4 md:p-6">
+                <div className="relative z-10 p-4 md:p-6">
                     <DialogHeader className="mb-10 text-center md:text-left">
                         <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
                             <div className="w-12 h-12 rounded-2xl  flex items-center justify-center ">
@@ -52,7 +51,7 @@ const UpgradeModal = ({ isOpen, onClose, trigger = "limit" }) => {
                         </div>
 
                         {/* Integrated Pricing Table */}
-                      <div className="bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden p-2 max-w-md mx-auto">
+                        <div className="bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden p-2 max-w-md mx-auto">
                             <PricingTable
                                 checkoutProps={{
                                     appearance: {
@@ -75,15 +74,15 @@ const UpgradeModal = ({ isOpen, onClose, trigger = "limit" }) => {
                             Cancel anytime. Secure checkout by Clerk.
                         </p>
                         <div className="flex gap-3 items-center justify-center w-full sm:w-auto">
-                            <Button 
-                                variant='ghost' 
-                                onClick={onClose} 
-                                className="flex-1 sm:flex-none text-zinc-400 cursor-pointer px-8 rounded-2xl font-semibold h-12 "
-                            >
-                                Not Now
-                            </Button>
-                            <Button 
-                                onClick={() => {/* Clerk handles checkout */}}
+                                <Button
+                                    variant='ghost'
+                                    onClick={onClose}
+                                    className="flex-1 sm:flex-none text-zinc-400 cursor-pointer px-8 rounded-2xl font-semibold h-12 "
+                                >
+                                    Not Now
+                                </Button>
+                            <Button
+                                onClick={() => {/* Clerk handles checkout */ }}
                                 className="flex-1 sm:flex-none bg-white text-black hover:bg-zinc-100 px-4 rounded-lg font-semibold h-8 transition-all active:scale-[0.98] shadow-xl shadow-white/5"
                             >
                                 Upgrade Now
