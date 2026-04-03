@@ -4,18 +4,18 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from '@clerk/themes'
-
-import { Inter } from "next/font/google";
 import ThemeWrapper from "@/components/ui/ThemeWrapper";
 import SonnerToaster from "@/components/ui/SonnerToaster";
+import { Inter } from "next/font/google";
 
 export const metadata = {
   title: "AI Event Organizer",
   description: "Smart AI Event Planner",
 };
+
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export default function RootLayout({ children }) {

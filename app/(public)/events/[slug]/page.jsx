@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/purity */
 "use client";
-
 import { useParams, useRouter, notFound } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
@@ -26,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import RegisterModal from "./_components/RegisterModal";
+
 
 // Utility function to darken a color
 function darkenColor(color, amount) {
@@ -110,7 +110,7 @@ export default function EventDetailPage() {
                     <Badge variant="outline" className="bg-white/10 text-white border-none px-4 text-lg font-semibold py-2 rounded-lg mb-4">
                         {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
                     </Badge>
-                    <h1 className="text-3xl mr-4 md:text-6xl font-bold tracking-tighter mb-4 text-white leading-tight">
+                    <h1 className={`text-3xl mr-4 md:text-6xl font-bold tracking-tighter mb-4 text-white leading-tight`}>
                         {event.title}
                     </h1>
                     <div className="flex flex-wrap items-center gap-6 text-white/60">

@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+
 
 // Utility function to darken a color
 function darkenColor(color, amount) {

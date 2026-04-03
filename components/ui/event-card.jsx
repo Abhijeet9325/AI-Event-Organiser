@@ -3,14 +3,21 @@ import { Card, CardContent } from './card'
 import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import Image from 'next/image'
 import { format } from 'date-fns'
-import { MapPin, Users, Calendar } from 'lucide-react'
+import { MapPin, Users, Calendar, QrCode, X } from 'lucide-react'
 
 import { useAuth } from '@clerk/nextjs'
+import { Button } from './Button'
 
-const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "grid", className = "" }) => {
+const EventCard = ({ event,
+    onClick,
+    action = null, // "event" | "null" | "ticket"
+    onDelete,
+    variant = "grid",
+    className = "",
+}) => {
     const { has } = useAuth();
     const hasPro = has?.({ plan: "pro" })
-    
+
     if (variant === "list") {
         return (
             <Card
@@ -83,39 +90,84 @@ const EventCard = ({ event, onClick, showActions = false, onDelete, variant = "g
                     </div>
                 </div>
             </div>
-            <CardContent className="p-5 flex flex-col gap-3">
+            <CardContent className="p-3 flex flex-col gap-2">
                 {/* Category Badge */}
                 <div className='flex'>
-                    <div className='flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-full border border-white/5'>
+                    <div className='flex items-center gap-1.5 bg-white/5 px-2 py-0.5 rounded-full border border-white/5'>
                         <span className='text-xs'>{getCategoryIcon(event.category)}</span>
-                        <span className='text-[10px] font-medium text-gray-300'>{getCategoryLabel(event.category)}</span>
+                        <span className='text-[9px] font-medium text-gray-300'>{getCategoryLabel(event.category)}</span>
                     </div>
                 </div>
 
-                <h3 className={`font-bold text-lg text-white transition-colors line-clamp-2 leading-tight ${hasPro ? "group-hover:text-purple-400" : "group-hover:text-blue-400"}`}>
+                <h3 className={`font-bold text-sm text-white transition-colors line-clamp-2 leading-tight ${hasPro ? "group-hover:text-purple-400" : "group-hover:text-blue-400"}`}>
                     {event.title}
                 </h3>
 
-                <div className='flex flex-col gap-2 mt-1'>
-                    <div className='flex items-center gap-2 text-xs text-gray-400'>
-                        <Calendar className='w-3.5 h-3.5 text-gray-500' />
-                        <span className='font-medium'>
-                            {format(event.startDate, "MMMM do, yyyy")}
+                <div className='flex flex-col gap-1 mt-0.5'>
+                    <div className='flex items-center gap-1.5 text-[11px] text-gray-400'>
+                        <Calendar className='w-3 h-3 text-gray-500' />
+                        <span className='font-medium line-clamp-1'>
+                            {format(event.startDate, "MMM dd, yyyy")}
                         </span>
                     </div>
-                    <div className='flex items-center gap-2 text-xs text-gray-400'>
-                        <MapPin className='w-3.5 h-3.5 text-gray-500' />
+                    <div className='flex items-center gap-1.5 text-[11px] text-gray-400'>
+                        <MapPin className='w-3 h-3 text-gray-500' />
                         <span className='line-clamp-1'>
                             {event.city}, {event.state || event.country}
                         </span>
                     </div>
-                    <div className='flex items-center gap-2 text-xs text-gray-400'>
-                        <Users className='w-3.5 h-3.5 text-gray-500' />
-                        <span>
+                    <div className='flex items-center gap-1.5 text-[11px] text-gray-400'>
+                        <Users className='w-3 h-3 text-gray-500' />
+                        <span className='line-clamp-1'>
                             {event.registrationCount || 0} / {event.capacity} registered
                         </span>
                     </div>
                 </div>
+                {action && (
+                    <div className="flex gap-2 pt-2">
+                        {/* Primary button */}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 gap-2"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClick?.(e);
+                            }}
+                        >
+                            {action === "event" ? (
+                                <>
+                                    <Eye className="w-4 h-4" />
+                                    View
+                                </>
+                            ) : (
+                                <>
+                                    <QrCode className="w-4 h-4" />
+                                    Show Ticket
+                                </>
+                            )}
+                        </Button>
+
+                        {/* Secondary button - delete / cancel */}
+                        {onDelete && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(event._id);
+                                }}
+                            >
+                                {action === "event" ? (
+                                    <Trash2 className="w-4 h-4" />
+                                ) : (
+                                    <X className="w-4 h-4" />
+                                )}
+                            </Button>
+                        )}
+                    </div>
+                )}
             </CardContent>
         </Card>
     )

@@ -14,7 +14,7 @@ import { createLocationSlug } from '@/lib/location-utils'
 import EventCard from '@/components/ui/event-card'
 import { CATEGORIES } from '@/lib/data'
 import { Card, CardContent } from '@/components/ui/card'
-import Link from 'next/link'
+
 
 
 
