@@ -3,7 +3,7 @@ import { Card, CardContent } from './card'
 import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import Image from 'next/image'
 import { format } from 'date-fns'
-import { MapPin, Users, Calendar, QrCode, X } from 'lucide-react'
+import { MapPin, Users, Calendar, QrCode, X, Eye, Trash2 } from 'lucide-react'
 
 import { useAuth } from '@clerk/nextjs'
 import { Button } from './Button'
@@ -124,28 +124,23 @@ const EventCard = ({ event,
                     </div>
                 </div>
                 {action && (
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex gap-2 pt-2 px-1">
                         {/* Primary button */}
                         <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1 gap-2"
+                            className="flex-1 bg-white/5 border-white/10  text-white font-light rounded-lg h-8 transition-all active:scale-[0.98] gap-2"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onClick?.(e);
                             }}
                         >
-                            {action === "event" ? (
+                            {action === "event" || action === "tickets" ? (
                                 <>
-                                    <Eye className="w-4 h-4" />
-                                    View
+                                    {action === "event" ? <Eye className="w-4 h-4 opacity-70" /> : <QrCode className="w-4 h-4 opacity-70" />}
+                                    {action === "event" ? "View" : "Show Ticket"}
                                 </>
-                            ) : (
-                                <>
-                                    <QrCode className="w-4 h-4" />
-                                    Show Ticket
-                                </>
-                            )}
+                            ) : null}
                         </Button>
 
                         {/* Secondary button - delete / cancel */}
@@ -153,7 +148,7 @@ const EventCard = ({ event,
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                className="w-11 border-red-500/20 text-red-500 hover:bg-red-500/10 hover:border-red-500/50 font-light rounded-lg h-8 transition-all active:scale-[0.98] flex items-center justify-center shrink-0"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onDelete(event._id);

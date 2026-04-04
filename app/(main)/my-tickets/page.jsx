@@ -2,7 +2,7 @@
 import EventCard from '@/components/ui/event-card'
 import { api } from '@/convex/_generated/api'
 import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query'
-import { Loader2, Ticket, Calendar, MapPin, X } from 'lucide-react'
+import { Loader2, Ticket, Calendar, MapPin, X, Copy } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/Button'
@@ -51,6 +51,11 @@ const MyTicketsPage = () => {
         } catch (error) {
             toast.error(error.message || "Failed to cancel registration")
         }
+    }
+
+    const handleCopyTicketId = () => {
+        navigator.clipboard.writeText(selectedTicket.qrCode);
+        toast.success("Ticket ID copied to clipboard!");
     }
 
     return (
@@ -145,36 +150,46 @@ const MyTicketsPage = () => {
                     open={!!selectedTicket}
                     onOpenChange={() => setSelectedTicket(null)}
                 >
-                    <DialogContent className='max-w-sm bg-[#1a1a1a] border-white/10'>
+                    <DialogContent className='max-w-xs bg-[#1a1a1a] border-white/10 p-6'>
                         <DialogHeader>
-                            <DialogTitle className='text-2xl font-bold'>Your Ticket</DialogTitle>
+                            <DialogTitle className='text-xl font-bold'>Your Ticket</DialogTitle>
                         </DialogHeader>
-                        <div className='space-y-6'>
-                            <div className='text-center space-y-2'>
-                                <p className='font-bold text-lg text-white'>{selectedTicket.attendeeName}</p>
-                                <p className='text-sm text-gray-300'>{selectedTicket.event.title}</p>
+                        <div className='space-y-4'>
+                            <div className='text-center space-y-1'>
+                                <p className='font-bold text-sm text-white'>{selectedTicket.attendeeName}</p>
+                                <p className='text-xs text-gray-300'>{selectedTicket.event.title}</p>
                             </div>
-                            <div className='flex justify-center p-8 bg-white rounded-2xl shadow-lg'>
-                                <QRCode value={selectedTicket.qrCode} size={220} level='H' />
+                            <div className='flex justify-center p-4 bg-white rounded-xl shadow-lg'>
+                                <QRCode value={selectedTicket.qrCode} size={160} level='H' />
                             </div>
-                            <div className='text-center space-y-1 bg-white/5 rounded-xl p-4'>
-                                <p className='text-xs text-gray-400 uppercase tracking-widest'>Ticket ID</p>
-                                <p className='font-mono text-sm break-all text-purple-400'>{selectedTicket.qrCode}</p>
+                            <div className='bg-white/5 rounded-lg p-3  w-full text-center'>
+                                <div className='flex items-center justify-center gap-1 mb-2'>
+                                    <p className='text-[10px] text-gray-400 uppercase tracking-widest'>Ticket ID</p>
+                                    <button
+                                        onClick={handleCopyTicketId}
+                                        className='hover:bg-white/10 p-1 rounded transition-colors'
+                                        title='Copy ticket ID'
+                                    >
+                                        <Copy className='w-3 h-3 text-gray-400' />
+                                    </button>
+                                </div>
+                                <p className='font-mono text-xs text-purple-400 break-words'>{selectedTicket.qrCode}</p>
                             </div>
-                            <div className='rounded-xl p-5 space-y-3 bg-white/5 border border-white/10'>
-                                <div className='flex items-center gap-3'>
-                                    <Calendar className='w-5 h-5 text-purple-400'/>
-                                    <span className='text-sm text-gray-200'>
-                                        {format(selectedTicket.event.startDate,"PPP, h:mm a")}
+                            <div className='rounded-lg p-3 space-y-2 bg-white/5 border border-white/10'>
+                                <div className='flex items-center gap-2'>
+                                    <Calendar className='w-4 h-4 text-purple-400' />
+                                    <span className='text-xs text-gray-200'>
+                                        {format(selectedTicket.event.startDate, "PPP, h:mm a")}
                                     </span>
                                 </div>
-                                <div className='flex items-center gap-3'>
-                                    <MapPin className='w-5 h-5 text-purple-400'/>
-                                    <span className='text-sm text-gray-200'>
+                                <div className='flex items-center gap-2'>
+                                    <MapPin className='w-4 h-4 text-purple-400' />
+                                    <span className='text-xs text-gray-200'>
                                         {`${selectedTicket.event.city}, ${selectedTicket.event.state || selectedTicket.event.country}`}
                                     </span>
                                 </div>
                             </div>
+                            <p className='text-center text-gray-400 text-xs '>Show this QR code at the event entrance  for check-in</p>
                         </div>
                     </DialogContent>
                 </Dialog>

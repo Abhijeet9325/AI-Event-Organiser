@@ -83,3 +83,49 @@ export const completeOnBoarding = mutation({
     return user._id;
   }
 })
+
+export const getMyEvents = query({
+  handler: async (ctx) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    if (!user) {
+      return [];
+    }
+    
+    const events = await ctx.db
+      .query("events")
+      .withIndex("by_organizer", (q) =>
+        q.eq("organizerId", user._id)
+      )
+      .order("desc")
+      .collect();
+    
+    return events;
+  }
+});
+
+export const deleteEvent = mutation({
+  args: {
+    eventId: v.id("events"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const event = await ctx.db.get(args.eventId);
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    // Check if user is the organizer
+    if (event.organizerId.toString() !== user._id.toString()) {
+      throw new Error("Unauthorized: You can only delete your own events");
+    }
+
+    // Delete the event
+    await ctx.db.delete(args.eventId);
+
+    return { success: true };
+  }
+});
