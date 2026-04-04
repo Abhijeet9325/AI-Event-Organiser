@@ -1,5 +1,5 @@
 "use client";
-import { Building, Search, Ticket, Plus, Crown } from "lucide-react";
+import { Building, Ticket, Plus, Crown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Authenticated } from "convex/react";
@@ -88,7 +88,7 @@ const Header = () => {
                             </button>
                         )}
 
-                        <div className="h-4 w-px bg-white/10"></div>
+                        <div className="h-4 w-px "></div>
                         <Authenticated>
                             <Button size="sm" variant="outline" asChild className="flex gap-2 bg-white text-black mr-4">
                                 <Link href={"/create-events"}>

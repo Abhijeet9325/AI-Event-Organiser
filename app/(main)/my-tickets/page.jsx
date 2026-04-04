@@ -11,7 +11,6 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import QRCode from 'react-qr-code'
-import { se } from 'date-fns/locale'
 import { format } from 'date-fns'
 
 const MyTicketsPage = () => {
