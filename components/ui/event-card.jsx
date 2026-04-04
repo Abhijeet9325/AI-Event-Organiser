@@ -6,7 +6,7 @@ import { format } from 'date-fns'
 import { MapPin, Users, Calendar, QrCode, X, Eye, Trash2 } from 'lucide-react'
 
 import { useAuth } from '@clerk/nextjs'
-import { Button } from './Button'
+import { Button } from './button'
 
 const EventCard = ({ event,
     onClick,

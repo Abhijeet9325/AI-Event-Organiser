@@ -25,7 +25,7 @@ import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";

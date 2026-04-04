@@ -8,10 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import z from 'zod';
 import { City, State } from 'country-state-city';
 import { useRouter } from 'next/navigation';
-import UpgradeModal from '@/components/UpgradeModal';
+import UpgradeModal from '@/components/upgradeModal';
 import UnsplashImagePicker from '@/components/ui/unplash-image-picker';
 import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';

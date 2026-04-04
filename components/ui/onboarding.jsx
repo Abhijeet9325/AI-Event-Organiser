@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useMemo, useState } from "react";
-import { Button } from "./Button"
+import { Button } from "./button"
 import { Label } from "./label";
 import { Field, FieldGroup } from "./field";
 import { Progress } from "./progress";

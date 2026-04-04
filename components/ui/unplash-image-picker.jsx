@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
 import { Input } from './input';
-import { Button } from './Button';
+import { Button } from './button';
 import { Loader2, Search, Image as ImageIcon, Sparkles, X } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from './badge';

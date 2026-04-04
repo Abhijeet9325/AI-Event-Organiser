@@ -2,7 +2,7 @@ import React from 'react'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog'
 import { Sparkles, CheckCircle2, X } from 'lucide-react'
 import { PricingTable } from '@clerk/nextjs'
-import { Button } from './ui/Button'
+import { Button } from './ui/button'
 
 const UpgradeModal = ({ isOpen, onClose, trigger = "limit" }) => {
     return (

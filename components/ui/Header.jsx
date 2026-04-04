@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Authenticated } from "convex/react";
 import { Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { Bricolage_Grotesque } from "next/font/google";
 
 import {
@@ -18,7 +18,7 @@ import OnboardingModal from "./onboarding";
 import { UseOnBoarding } from "@/hooks/use-onboarding";
 import SearchLocationBar from "../search-location-bar";
 import { Badge } from "./badge";
-import UpgradeModal from "../UpgradeModal";
+import UpgradeModal from "../upgradeModal";
 import { useState } from "react";
 
 

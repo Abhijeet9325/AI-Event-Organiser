@@ -1,11 +1,11 @@
-import Header from "@/components/ui/Header";
+import Header from "@/components/ui/header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from '@clerk/themes'
-import ThemeWrapper from "@/components/ui/ThemeWrapper";
-import SonnerToaster from "@/components/ui/SonnerToaster";
+import ThemeWrapper from "@/components/ui/themeWrapper";
+import SonnerToaster from "@/components/ui/sonnerToaster";
 import { Inter } from "next/font/google";
 
 export const metadata = {

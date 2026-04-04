@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import { useConvexMutation } from "@/hooks/use-convex-query";

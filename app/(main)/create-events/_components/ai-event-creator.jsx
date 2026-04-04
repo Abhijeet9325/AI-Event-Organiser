@@ -13,7 +13,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Sparkles, X, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export function AiEventCreator({ onEventGenerated }) {
   const [loading, setLoading] = useState(false)

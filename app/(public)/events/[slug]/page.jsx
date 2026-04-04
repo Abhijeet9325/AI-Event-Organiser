@@ -20,7 +20,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";

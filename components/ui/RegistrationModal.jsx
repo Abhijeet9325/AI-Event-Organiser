@@ -1,6 +1,6 @@
 "use client"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { CheckCircle, Loader2 } from "lucide-react";
 
 export default function RegistrationModal({ isOpen, setIsOpen, onConfirm, isLoading }) {

@@ -1,7 +1,7 @@
 import { ArrowRight, Bell, Calendar, CreditCard, LayoutGrid, Search, Ticket, Wallet } from "lucide-react";
 import Link from "next/link";
 import { Bricolage_Grotesque } from "next/font/google";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   subsets: ["latin"],

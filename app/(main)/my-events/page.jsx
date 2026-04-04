@@ -6,7 +6,7 @@ import React from 'react'
 import { toast } from 'sonner'
 import { Loader2, Eye } from 'lucide-react'
 import EventCard from '@/components/ui/event-card'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 
