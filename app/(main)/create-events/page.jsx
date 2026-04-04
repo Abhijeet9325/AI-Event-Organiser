@@ -26,6 +26,9 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { AiEventCreator } from './_components/ai-event-creator';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const eventSchema = z.object({

@@ -15,6 +15,9 @@ import EventCard from '@/components/ui/event-card'
 import { CATEGORIES } from '@/lib/data'
 import { Card, CardContent } from '@/components/ui/card'
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 
 
 
