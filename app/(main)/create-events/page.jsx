@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import z from 'zod';
 import { City, State } from 'country-state-city';
 import { useRouter } from 'next/navigation';
-import UpgradeModal from '@/components/upgradeModal';
+import UpgradeModal from '@/components/UpgradeModal';
 import UnsplashImagePicker from '@/components/ui/unplash-image-picker';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';

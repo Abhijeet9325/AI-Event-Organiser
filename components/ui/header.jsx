@@ -18,7 +18,7 @@ import OnboardingModal from "./onboarding";
 import { UseOnBoarding } from "@/hooks/use-onboarding";
 import SearchLocationBar from "../search-location-bar";
 import { Badge } from "./badge";
-import UpgradeModal from "../upgradeModal";
+import UpgradeModal from "@/components/UpgradeModal";
 import { useState } from "react";
 
 
