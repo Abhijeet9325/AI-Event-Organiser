@@ -19,6 +19,7 @@ import {
   Download,
   Search,
   Eye,
+  FileText,
 } from "lucide-react";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
@@ -110,6 +111,119 @@ export default function EventDashboardPage() {
     toast.success("CSV exported successfully");
   };
 
+  const handleExportPDF = () => {
+    if (!registrations || registrations.length === 0) {
+      toast.error("No registrations to export");
+      return;
+    }
+
+    // Create a simple HTML table for PDF
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${dashboardData?.event.title || "Event"} - Attendee Report</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; padding: 20px; }
+          .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #3b82f6; padding-bottom: 15px; }
+          .header h1 { color: #1e293b; font-size: 28px; margin-bottom: 8px; }
+          .header p { color: #64748b; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+          thead { background: #1e293b; color: white; }
+          th { 
+            padding: 12px; 
+            text-align: left; 
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+          }
+          td { 
+            padding: 10px 12px; 
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+          }
+          tbody tr:nth-child(even) { background: #f8fafc; }
+          tbody tr:hover { background: #f1f5f9; }
+          .checked-in { color: #10b981; font-weight: 600; }
+          .pending { color: #f59e0b; font-weight: 600; }
+          .footer { 
+            margin-top: 30px; 
+            padding-top: 15px; 
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+          }
+          @media print {
+            body { padding: 0; }
+            .stat-box { page-break-inside: avoid; }
+            table { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${dashboardData?.event.title || "Event"}</h1>
+          <p>Generated on ${new Date().toLocaleString()}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Registered</th>
+              <th>Checked In</th>
+              <th>QR Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${registrations
+              .map(
+                (reg) => `
+              <tr>
+                <td><strong>${reg.attendeeName}</strong></td>
+                <td>${reg.attendeeEmail}</td>
+                <td><span class="${reg.checkedIn ? "checked-in" : "pending"}">${
+                  reg.checkedIn ? "✓ Checked In" : "⏳ Pending"
+                }</span></td>
+                <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                <td>${
+                  reg.checkedInAt
+                    ? new Date(reg.checkedInAt).toLocaleString()
+                    : "-"
+                }</td>
+                <td><code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 11px;">${reg.qrCode}</code></td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <p>Event ID: ${eventId} | Total Attendees: ${registrations.length}</p>
+          <p>This report is confidential and for authorized personnel only.</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Create new window and print to PDF
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+
+    // Auto print after content loads
+    setTimeout(() => {
+      printWindow.print();
+      toast.success("PDF ready for download!");
+    }, 250);
+  };
+
   if (isLoading || loadingRegistrations) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -141,7 +255,7 @@ export default function EventDashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 pt-24 pb-20">
+    <div className="min-h-screen bg-gray-950 pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Back Button */}
         <button
@@ -243,10 +357,10 @@ export default function EventDashboardPage() {
 
         {/* Quick Check-In Button */}
         {stats.isEventToday && !stats.isEventPast && (
-          <div className="mb-12 p-6 bg-gradient-to-r from-orange-600 to-pink-600 rounded-3xl shadow-lg">
+          <div className="mb-12 bg-gradient-to-r from-orange-600 to-pink-600 rounded-xl shadow-lg">
             <button
               onClick={() => setShowQRScanner(true)}
-              className="w-full flex items-center justify-center gap-3 text-white font-semibold text-lg py-3"
+              className="w-full flex items-center justify-center gap-3 text-white font-semibold text-sm py-3"
             >
               <QrCode className="w-6 h-6" />
               Scan QR Code to Check-In Attendees
@@ -313,7 +427,7 @@ export default function EventDashboardPage() {
         </div>
 
         {/* Attendee Management Section */}
-        <div className="bg-slate-800 rounded-3xl border border-slate-700 shadow-sm overflow-hidden">
+        <div className="bg-gray-900 rounded-xl border border-gray-900 shadow-sm overflow-hidden">
           <div className="border-b border-slate-700 px-6 sm:px-8 py-6">
             <h2 className="text-2xl font-bold text-white">Attendee Management</h2>
           </div>
@@ -331,11 +445,11 @@ export default function EventDashboardPage() {
                 />
               </div>
               <Button
-                onClick={handleExportCSV}
-                className="px-6 py-2.5 bg-slate-700 text-slate-100 font-medium rounded-xl border border-slate-600"
+                onClick={handleExportPDF}
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium rounded-xl border-0 shadow-lg"
               >
-                <Download className="w-4 h-4 mr-2" />
-                Export CSV
+                <FileText className="w-4 h-4 mr-2" />
+                Export PDF
               </Button>
             </div>
 
