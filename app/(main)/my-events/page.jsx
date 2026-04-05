@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+
 
 const MyEventsPage = () => {
     const router = useRouter();

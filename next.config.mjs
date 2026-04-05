@@ -9,11 +9,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    dynamicIO: true,
-  },
-  // Skip static export for dynamic pages
-  output: 'standalone',
 }
 
 export default nextConfig

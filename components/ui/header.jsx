@@ -88,7 +88,7 @@ const Header = () => {
                             </button>
                         )}
 
-                        <div className="h-4 w-px "></div>
+                       
                         <Authenticated>
                             <Button size="sm" variant="outline" asChild className="flex gap-2 bg-white text-black mr-4">
                                 <Link href={"/create-events"}>

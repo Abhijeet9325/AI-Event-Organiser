@@ -13,8 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import QRCode from 'react-qr-code'
 import { format } from 'date-fns'
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 const MyTicketsPage = () => {
     const [selectedTicket, setSelectedTicket] = useState(null)
