@@ -11,11 +11,11 @@ function getConvexUrl() {
     
     if (url) return url;
 
-    const hint =
-        "Set NEXT_PUBLIC_CONVEX_URL in Vercel: Project → Settings → Environment Variables. " +
-        "Use the Deployment URL ending in .convex.cloud from your Convex dashboard.";
+    // const hint =
+    //     "Set NEXT_PUBLIC_CONVEX_URL in Vercel: Project → Settings → Environment Variables. " +
+    //     "Use the Deployment URL ending in .convex.cloud from your Convex dashboard.";
 
-    throw new Error(`Missing NEXT_PUBLIC_CONVEX_URL. ${hint}`);
+    // throw new Error(`Missing NEXT_PUBLIC_CONVEX_URL. ${hint}`);
 }
 
 export function ConvexClientProvider({ children }) {

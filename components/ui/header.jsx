@@ -74,7 +74,7 @@ const Header = () => {
                     </div>
 
                     {/* Right Side */}
-                    <div className="flex items-center gap-4 text-sm font-medium">
+                    <div className="flex items-center gap-6 text-sm font-medium">
 
                         <Link href="/explore" className="text-gray-400 hover:text-white transition-colors">
                             Explore
@@ -90,11 +90,11 @@ const Header = () => {
 
                        
                         <Authenticated>
-                            <Button size="sm" variant="outline" asChild className="flex gap-2 bg-white text-black mr-4">
+                            <Button size="sm" asChild className="flex gap-2 bg-white text-black rounded-sm font-semibold hover:bg-gray-100 active:scale-100">
                                 <Link href={"/create-events"}>
                                     <Plus className="w-4 h-4" />
 
-                                    <span className="hidden sm:inline font-semibold">Create Event</span >
+                                    <span className="hidden sm:inline">Create Event</span >
                                 </Link>
                             </Button>
                             <UserButton>

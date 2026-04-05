@@ -86,7 +86,7 @@ const SearchLocationBar = () => {
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [])
 
     useEffect(() => {
         if (searchQuery.length >= 2) {
@@ -96,7 +96,7 @@ const SearchLocationBar = () => {
 
     const handleLocationSelect = async (city, state) => {
         try {
-            if (currentUser?.interests) {
+            if (currentUser?.interests && currentUser?.location) {
                 await updateLocation({
                     location: { city, state, country: "India" },
                     interests: currentUser.interests
@@ -119,7 +119,7 @@ const SearchLocationBar = () => {
 
     return (
         <div className='flex items-center w-full max-w-3xl mx-4' ref={searchRef}>
-            <div className='relative flex flex-1 items-center bg-white/5 border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300'>
+            <div className='relative flex flex-1 items-center border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300'>
                 {/* Search Part */}
                 <div className='relative flex-1 flex items-center pl-3 min-w-[200px]'>
                     <Search className="w-4 h-4 text-zinc-500" />
@@ -141,6 +141,9 @@ const SearchLocationBar = () => {
                     onValueChange={(value) => {
                         setSelectedState(value);
                         setSelectedCity("");
+                        if (value && selectedState) {
+                            handleLocationSelect(value, selectedState)
+                        }
                     }}
                 >
                     <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[13px] h-9 hover:text-white transition-colors shadow-none rounded-none">
@@ -174,7 +177,6 @@ const SearchLocationBar = () => {
                     onValueChange={(value) => {
                         setSelectedCity(value);
                         handleLocationChange(selectedState, value);
-                        handleLocationSelect(value, selectedState);
                     }}
                     disabled={!selectedState}
                 >
