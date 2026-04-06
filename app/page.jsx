@@ -140,7 +140,7 @@ export default function Home() {
 
           <h1 className={`text-4xl md:text-7xl font-bold tracking-[-0.04em] mb-10 leading-[0.9] ${bricolageGrotesque.className}`}>
             The system for <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500">event excellence.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500"> event excellence.  </span>
           </h1>
 
           <p className="text-zinc-400 text-sm md:text-xl max-w-xl mx-auto mb-14 leading-relaxed font-light tracking-tight">
@@ -313,7 +313,7 @@ export default function Home() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-12 bg-black hover:bg-zinc-900/40 transition-all group"
+                className="p-12 bg-black hover:bg-zinc-950 transition-all group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-500 mb-10 group-hover:text-[#16d59e] group-hover:border-[#16d59e]/30 transition-all duration-500">
                   {f.icon}

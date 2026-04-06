@@ -357,10 +357,10 @@ export default function EventDashboardPage() {
 
         {/* Quick Check-In Button */}
         {stats.isEventToday && !stats.isEventPast && (
-          <div className="mb-12 bg-gradient-to-r from-orange-600 to-pink-600 rounded-xl shadow-lg">
+          <div className="mb-12 bg-white rounded-xl">
             <button
               onClick={() => setShowQRScanner(true)}
-              className="w-full flex items-center justify-center gap-3 text-white font-semibold text-sm py-3"
+              className="w-full flex items-center justify-center gap-3 text-black font-semibold text-sm py-3"
             >
               <QrCode className="w-6 h-6" />
               Scan QR Code to Check-In Attendees

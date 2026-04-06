@@ -47,7 +47,7 @@ const eventSchema = z.object({
     ticketType: z.enum(["free", "paid"]).default("free"),
     ticketPrice: z.number().optional().default(0),
     coverImage: z.string().optional(),
-    themeColor: z.string().default("#4c1d95"),
+    themeColor: z.string().default("#000000"),
 })
 
 const CreateEvent = () => {
@@ -75,7 +75,7 @@ const CreateEvent = () => {
             locationType: "physical",
             ticketType: "free",
             capacity: 50,
-            themeColor: "#1e3a8a",
+            themeColor: "#000000",
             category: "",
             state: "",
             city: "",
@@ -87,7 +87,7 @@ const CreateEvent = () => {
 
     React.useEffect(() => {
         if (isLoaded && !hasPro) {
-            setValue("themeColor", "#1e3a8a");
+            setValue("themeColor", "#000000");
         }
     }, [isLoaded, hasPro, setValue]);
 
@@ -103,7 +103,7 @@ const CreateEvent = () => {
     }, [selectedState, indianStates])
 
     const colorPresets = [
-        "#4c1d95", "#1e3a8a", "#065f46", "#b91c1c", "#d97706", "#be185d", "#111827"
+        "#000000", "#1e3a8a", "#4c1d95", "#065f46", "#b91c1c", "#d97706", "#be185d"
     ];
 
     const onSubmit = async (data) => {
@@ -143,184 +143,187 @@ const handleAIGenerated = (generatedData) => {
 
 
     return (
-        <div style={{ backgroundColor: themeColor }} className="min-h-screen text-white pt-24 pb-20 px-6 relative overflow-hidden">
-            {/* Theme Background Accents */}
+        <div className="min-h-screen bg-black text-white pt-24 pb-20 px-4 md:px-6 relative overflow-hidden">
+            {/* Background Glows */}
             <div className="fixed inset-0 pointer-events-none -z-10">
                 <div
-                    className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-10 transition-colors duration-700"
+                    className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 transition-all duration-1000"
                     style={{ backgroundColor: themeColor }}
                 />
                 <div
-                    className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-5 transition-colors duration-700"
+                    className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-10 transition-all duration-1000"
                     style={{ backgroundColor: themeColor }}
                 />
             </div>
 
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-6xl mx-auto">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/5 pb-10">
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-3 mb-1">
-                            <div
-                                className="w-10 h-10 rounded-xl flex items-center justify-center border transition-colors duration-300"
-                                style={{
-                                    backgroundColor: `${themeColor}20`,
-                                    borderColor: `${themeColor}40`
-                                }}
-                            >
-                                <Plus className="w-5 h-5" style={{ color: themeColor }} />
-                            </div>
-                            <h1 className="text-4xl md:text-5xl font-black tracking-tight">Create Event</h1>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16 border-b border-white/5 pb-12">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                            <Plus className="w-3 h-3" /> New Event
                         </div>
-                        <p className="text-zinc-500 font-medium max-w-lg">
-                            Design a professional landing page for your next event in minutes.
+                        <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
+                            Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500">Event</span>
+                        </h1>
+                        <p className="text-zinc-500 font-medium max-w-md text-sm md:text-base leading-relaxed">
+                            Bring your vision to life. Fill in the details below to launch your professional event page.
                         </p>
                     </div>
 
                     {!hasPro && (
-                        <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center gap-6 backdrop-blur-xl">
-                            <div>
-                                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Free Tier Usage</p>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xl font-black text-white">{currentUser?.freeEventsCreated || 0}/1</span>
-                                    <span className="text-zinc-500 text-xs font-medium">events created</span>
+                        <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6 backdrop-blur-xl">
+                            <div className="text-center sm:text-left">
+                                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Event Limit</p>
+                                <div className="flex items-center gap-2 justify-center sm:justify-start">
+                                    <span className="text-2xl font-black text-white">{currentUser?.freeEventsCreated || 0}/1</span>
+                                    <span className="text-zinc-500 text-xs font-medium italic">Available</span>
                                 </div>
                             </div>
                             <Button
                                 onClick={() => setShowUpgradeModal(true)}
-                                className="bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold text-xs h-10 px-4"
+                                className="w-full sm:w-auto bg-white text-black hover:bg-zinc-200 rounded-lg font-bold text-sm h-10 px-4  active:scale-95 transition-all"
                             >
-                                <Sparkles className="w-3 h-3 mr-2" /> Upgrade
+                                <Sparkles className="w-4 h-4 mr-2" /> Upgrade to Pro
                             </Button>
                         </div>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-16">
                     {/* LEFT COLUMN: PREVIEW & THEME */}
-                    <div className="lg:col-span-5 space-y-8">
-                        <div className="sticky top-32 space-y-8">
+                    <div className="lg:col-span-5 space-y-12">
+                        <div className="sticky top-32 space-y-12">
                             {/* LIVE PREVIEW CARD */}
-                            <div className="space-y-4">
-                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] ml-1">Live Preview</Label>
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between px-1">
+                                    <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Live Preview</Label>
+                                    <div className="flex gap-1.5">
+                                        <div className="w-2 h-2 rounded-full bg-zinc-800" />
+                                        <div className="w-2 h-2 rounded-full bg-zinc-800" />
+                                    </div>
+                                </div>
                                 <div
-                                    className="relative bg-zinc-900 border border-white/5 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 group"
-                                    style={{ borderColor: `${themeColor}20` }}
+                                    className="relative bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl transition-all duration-500 group"
+                                    style={{ boxShadow: `0 0 60px ${themeColor}10` }}
                                 >
                                     {/* Cover Image Preview */}
-                                    <div className="aspect-video bg-zinc-800 relative overflow-hidden">
+                                    <div className="aspect-video bg-zinc-900 relative overflow-hidden">
                                         {coverImage ? (
                                             <Image
                                                 src={coverImage}
                                                 alt="Preview"
                                                 fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                                className="object-cover group-hover:scale-105 transition-transform duration-1000"
                                             />
                                         ) : (
                                             <div
                                                 className="absolute inset-0 flex items-center justify-center transition-colors duration-500"
-                                                style={{ backgroundColor: `${themeColor}40` }}
+                                                style={{ backgroundColor: `${themeColor}10` }}
                                             >
-                                                <div className="flex flex-col items-center gap-2 opacity-40">
-                                                    <ImageIcon className="w-8 h-8" />
-                                                    <span className="text-[10px] font-bold uppercase tracking-widest">No Cover Selected</span>
+                                                <div className="flex flex-col items-center gap-3 opacity-20">
+                                                    <ImageIcon className="w-10 h-10" />
+                                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Add Cover Image</span>
                                                 </div>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
 
                                         <button
                                             type="button"
                                             onClick={() => setShowImagePicker(true)}
-                                            className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                                            className="absolute bottom-6 right-6 bg-white/10 backdrop-blur-xl border border-white/10 text-white text-[11px] font-bold px-6 py-2.5 rounded-full hover:bg-white/15  transition-all flex items-center gap-2 shadow-2xl active:scale-95"
                                         >
-                                            <ImageIcon className="w-3 h-3" /> {coverImage ? "Change Cover" : "Add Cover"}
+                                            <ImageIcon className="w-3.5 h-3.5" /> {coverImage ? "Update Cover" : "Select Image"}
                                         </button>
                                     </div>
 
                                     {/* Content Preview */}
-                                    <div className="p-8 space-y-6">
-                                        <div className="flex items-center gap-2">
-                                            <Badge className=" bg-white/5 text-zinc-400 border-none px-3 py-1 text-[10px] font-bold rounded-full">
+                                    <div className="p-8 md:p-10 space-y-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold text-zinc-400">
                                                 {category ? CATEGORIES.find(c => c.id === category)?.icon + " " + CATEGORIES.find(c => c.id === category)?.label : "Category"}
-                                            </Badge>
-                                            <Badge
-                                                className="border-none px-3 py-1 text-[10px] font-bold rounded-full text-white transition-colors duration-500"
+                                            </div>
+                                            <div
+                                                className="px-3 py-1 rounded-full text-[10px] font-black text-white transition-all duration-500 shadow-lg"
                                                 style={{ backgroundColor: themeColor }}
                                             >
                                                 {ticketType === 'free' ? 'FREE' : 'PAID'}
-                                            </Badge>
+                                            </div>
                                         </div>
 
-                                        <h2 className="text-2xl font-black text-white leading-tight line-clamp-2">
-                                            {title || "Your Event Title Here"}
+                                        <h2 className="text-3xl font-black text-white leading-tight line-clamp-2 tracking-tight">
+                                            {title || "Your Event Title"}
                                         </h2>
 
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-3 text-zinc-400 text-xs font-bold">
-                                                <CalendarIcon className="w-4 h-4" style={{ color: themeColor }} />
-                                                {startDate ? format(startDate, "MMM dd, yyyy") : "Select Start Date"}
-                                                {endDate && ` - ${format(endDate, "MMM dd, yyyy")}`}
+                                        <div className="grid grid-cols-2 gap-6 pt-2">
+                                            <div className="space-y-1">
+                                                <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Date & Time</p>
+                                                <p className="text-xs font-bold text-zinc-300 flex items-center gap-2">
+                                                    <CalendarIcon className="w-3.5 h-3.5" style={{ color: themeColor }} />
+                                                    {startDate ? format(startDate, "MMM dd") : "TBD"}
+                                                </p>
                                             </div>
-                                            <div className="flex items-center gap-3 text-zinc-400 text-xs font-bold">
-                                                <MapPin className="w-4 h-4" style={{ color: themeColor }} />
-                                                {city || "Location"}
+                                            <div className="space-y-1 text-right md:text-left">
+                                                <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Location</p>
+                                                <p className="text-xs font-bold text-zinc-300 flex items-center gap-2 justify-end md:justify-start">
+                                                    <MapPin className="w-3.5 h-3.5" style={{ color: themeColor }} />
+                                                    {city || "Remote"}
+                                                </p>
                                             </div>
-                                            {ticketType === 'paid' && ticketPrice > 0 && (
-                                                <div className="flex items-center gap-3 text-zinc-400 text-xs font-bold">
-                                                    <Ticket className="w-4 h-4" style={{ color: themeColor }} />
-                                                    ₹{ticketPrice}
-                                                </div>
-                                            )}
                                         </div>
 
-                                        <div className="pt-4 border-t border-white/5">
-                                            <p className="text-zinc-500 font-medium leading-relaxed line-clamp-3 italic">
-                                                {description || "Add a description to tell people what your event is all about..."}
+                                        <div className="pt-6 border-t border-white/5">
+                                            <p className="text-zinc-500 font-medium leading-relaxed line-clamp-3 text-sm italic">
+                                                {description || "A brief overview of your event will appear here once you add a description..."}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Theme Accent Glow */}
-                                    <div className="absolute -bottom-20 -right-20 w-40 h-40 rounded-lg blur-[80px] pointer-events-none opacity-20 transition-colors duration-700" style={{ backgroundColor: themeColor }} />
+                                    <div className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-20 transition-all duration-1000" style={{ backgroundColor: themeColor }} />
                                 </div>
                             </div>
 
                             {/* THEME PICKER */}
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-6 backdrop-blur-xl">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <Palette className="w-4 h-4" style={{ color: themeColor }} />
-                                    <h3 className="text-sm font-bold text-white uppercase tracking-wider">Theme & Identity</h3>
+                            <div className="bg-zinc-900/30 border border-white/5 rounded-[2rem] p-8 backdrop-blur-xl">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                            <Palette className="w-4 h-4 text-zinc-400" />
+                                        </div>
+                                        <h3 className="text-sm font-bold text-white uppercase tracking-widest">Theme</h3>
+                                    </div>
+                                    {!hasPro && (
+                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-purple-500/10 text-[9px] font-black text-purple-400 uppercase tracking-tighter">
+                                            <Crown className="w-2.5 h-2.5" /> PRO
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div className="space-y-4">
-                                    <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Brand Color</Label>
-                                    <div className="flex flex-wrap gap-3">
+                                <div className="space-y-6">
+                                    <div className="flex flex-wrap gap-4">
                                         {colorPresets.map((color) => (
                                             <button
                                                 key={color}
                                                 type="button"
                                                 onClick={() => {
-                                                    if (hasPro || color === "#1e3a8a") {
+                                                    if (hasPro || color === "#000000") {
                                                         setValue("themeColor", color);
                                                     } else {
                                                         setShowUpgradeModal(true);
                                                     }
                                                 }}
                                                 className={cn(
-                                                    "w-10 h-10 rounded-xl border-2 transition-all active:scale-90 relative",
-                                                    themeColor === color ? "scale-110 shadow-lg" : "border-transparent",
-                                                    !hasPro && color !== "#1e3a8a" && "opacity-60 grayscale-[0.5]"
+                                                    "w-10 h-10 rounded-xl transition-all active:scale-90 relative group/color",
+                                                    themeColor === color ? "scale-110 shadow-[0_0_20px_rgba(255,255,255,0.1)] ring-2 ring-white ring-offset-4 ring-offset-zinc-950" : "hover:scale-105",
+                                                    !hasPro && color !== "#000000" && "opacity-40 grayscale-[0.8]"
                                                 )}
-                                                style={{
-                                                    backgroundColor: color,
-                                                    borderColor: themeColor === color ? 'white' : 'transparent',
-                                                    boxShadow: themeColor === color ? `0 0 20px ${color}40` : 'none'
-                                                }}
+                                                style={{ backgroundColor: color }}
                                             >
-                                                {!hasPro && color !== "#1e3a8a" && (
+                                                {!hasPro && color !== "#000000" && (
                                                     <div className="absolute inset-0 flex items-center justify-center">
-                                                        <Crown className="w-4 h-4 text-white/40" />
+                                                        <Crown className="w-3.5 h-3.5 text-white/20" />
                                                     </div>
                                                 )}
                                             </button>
@@ -329,87 +332,75 @@ const handleAIGenerated = (generatedData) => {
                                             <button
                                                 type="button"
                                                 onClick={() => setShowUpgradeModal(true)}
-                                                className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center bg-zinc-900 group overflow-hidden relative"
+                                                className="w-10 h-10 rounded-xl border border-white/5 flex items-center justify-center bg-zinc-900/50 group/more transition-all hover:bg-zinc-800"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                <Plus className="w-4 h-4 text-zinc-600 group-hover:text-white transition-colors" />
+                                                <Plus className="w-4 h-4 text-zinc-700 group-hover/more:text-white transition-colors" />
                                             </button>
                                         )}
                                     </div>
-                                    {!hasPro && <p className="text-[10px] font-bold text-purple-400/80 uppercase tracking-widest mt-2">Pro: Unlock custom colors</p>}
+                                    {!hasPro && (
+                                        <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest text-center">
+                                            Upgrade to unlock custom branding
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT COLUMN: FORM FIELDS */}
-                    <div className="lg:col-span-7 space-y-12">
+                    <div className="lg:col-span-7 space-y-16">
                         {/* SECTION 1: BASIC INFO */}
-                        <div className="space-y-8 rounded-[2.5rem] p-8 md:p-12 ">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors duration-300"
-                                    style={{
-                                        backgroundColor: `${themeColor}10`,
-                                        borderColor: `${themeColor}20`
-                                    }}
-                                >
-                                    <ImageIcon className="w-4 h-4" style={{ color: themeColor }} />
+                        <div className="space-y-10">
+                            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                                    <Sparkles className="w-5 h-5 text-zinc-500" />
                                 </div>
-                                <h2 className="text-xl font-bold text-white tracking-tight">Basic Details</h2>
+                                <div>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Essential Info</h2>
+                                    <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest">The foundation of your event</p>
+                                </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-semibold text-zinc-400 ml-1">Event Title</Label>
+                            <div className="space-y-10">
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Event Title</Label>
                                     <Input
                                         {...register("title")}
-                                        placeholder="e.g. Master React 19 Workshop"
-                                        className="h-14 text-white text-lg font-semibold rounded-2xl bg-white/5 border-white/10 transition-all shadow-none"
-                                        style={{
-                                            borderColor: `${themeColor}20`,
-                                        }}
-                                        onFocus={(e) => e.target.style.borderColor = themeColor}
-                                        onBlur={(e) => e.target.style.borderColor = `${themeColor}20`}
+                                        placeholder="Enter a catchy title..."
+                                        className="h-16 text-white text-xl font-bold rounded-2xl bg-zinc-900/50 border-white/5 focus:border-white/20 transition-all shadow-none px-6"
                                     />
-                                    {errors.title && <p className="text-red-500 text-[10px] font-semibold uppercase tracking-widest ml-1">{errors.title.message}</p>}
+                                    {errors.title && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="space-y-4">
                                     <div className="flex items-center justify-between ml-1">
-                                        <Label className="text-xs font-bold text-zinc-400">Description</Label>
-
+                                        <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest">Description</Label>
                                         <AiEventCreator onEventGenerated={handleAIGenerated} />
-
                                     </div>
                                     <Textarea
                                         {...register("description")}
-                                        placeholder="Tell people what makes your event special..."
-                                        className="min-h-[160px] text-white font-medium rounded-2xl bg-white/5 border-white/10 transition-all shadow-none py-4 leading-relaxed"
-                                        style={{
-                                            borderColor: `${themeColor}20`,
-                                        }}
-                                        onFocus={(e) => e.target.style.borderColor = themeColor}
-                                        onBlur={(e) => e.target.style.borderColor = `${themeColor}20`}
+                                        placeholder="What is this event about? Describe the schedule, speakers, and highlights..."
+                                        className="min-h-[200px] text-white font-medium rounded-2xl bg-zinc-900/50 border-white/5 focus:border-white/20 transition-all shadow-none p-6 leading-relaxed resize-none"
                                     />
                                     {errors.description && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.description.message}</p>}
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">Category</Label>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Category</Label>
                                     <Controller
                                         name="category"
                                         control={control}
                                         render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white px-4 rounded-lg focus:ring-0 shadow-none hover:bg-white/10 transition-all">
-                                                    <SelectValue placeholder="What kind of event is it?" />
+                                                <SelectTrigger className="h-16 bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all">
+                                                    <SelectValue placeholder="Select an event category" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-lg p-2 max-h-80">
+                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-80 shadow-2xl">
                                                     <SelectGroup>
                                                         {CATEGORIES.map((cat) => (
-                                                            <SelectItem key={cat.id} value={cat.id} className="rounded-xl focus:bg-white/10 focus:text-white py-3">
-                                                                <span className="mr-3">{cat.icon}</span> {cat.label}
+                                                            <SelectItem key={cat.id} value={cat.id} className="rounded-xl focus:bg-white/5 focus:text-white py-4 transition-all cursor-pointer">
+                                                                <span className="mr-4 text-lg">{cat.icon}</span> <span className="font-bold">{cat.label}</span>
                                                             </SelectItem>
                                                         ))}
                                                     </SelectGroup>
@@ -423,42 +414,39 @@ const handleAIGenerated = (generatedData) => {
                         </div>
 
                         {/* SECTION 2: DATE & LOCATION */}
-                        <div className="space-y-8 rounded-lg p-8 md:p-12 ">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors duration-300"
-                                    style={{
-                                        backgroundColor: `${themeColor}10`,
-                                        borderColor: `${themeColor}20`
-                                    }}
-                                >
-                                    <CalendarIcon className="w-4 h-4" style={{ color: themeColor }} />
+                        <div className="space-y-10">
+                            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                                    <MapPin className="w-5 h-5 text-zinc-500" />
                                 </div>
-                                <h2 className="text-xl font-bold text-white tracking-tight">Time & Location</h2>
+                                <div>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Time & Place</h2>
+                                    <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest">Where and when it happens</p>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">Start Date</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Start Date</Label>
                                     <Controller
                                         name="startDate"
                                         control={control}
                                         render={({ field }) => (
                                             <Popover>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className={cn("h-14 w-full bg-white/5 border-white/10 text-white rounded-lg justify-start font-bold hover:bg-white/10 hover:text-white transition-all", !field.value && "text-zinc-600")}>
-                                                        <CalendarIcon className="mr-3 h-5 w-5 text-zinc-700" />
-                                                        {field.value ? format(field.value, "PPP") : "Pick a date"}
+                                                    <Button variant="outline" className={cn("h-16 w-full bg-zinc-900/50 border-white/5 text-white rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 hover:text-white transition-all shadow-none", !field.value && "text-zinc-600")}>
+                                                        <CalendarIcon className="mr-4 h-5 w-5 text-zinc-700" />
+                                                        {field.value ? format(field.value, "PPP") : "Select a start date"}
                                                     </Button>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-lg shadow-2xl" align="start">
+                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-2xl shadow-2xl" align="start">
                                                     <Calendar
                                                         mode="single"
                                                         selected={field.value}
                                                         onSelect={field.onChange}
                                                         disabled={(date) => date < new Date()}
                                                         initialFocus
-                                                        className="bg-transparent text-white"
+                                                        className="bg-transparent text-white p-4"
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -467,87 +455,33 @@ const handleAIGenerated = (generatedData) => {
                                     {errors.startDate && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.startDate.message}</p>}
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">Start Time</Label>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Start Time</Label>
                                     <div className="relative">
-                                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
+                                        <Clock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
                                         <Input
                                             {...register("startTime")}
                                             type="time"
-                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-lg focus:border-purple-500/50 transition-all shadow-none"
+                                            className="h-16 pl-14 bg-zinc-900/50 border-white/5 text-white font-bold rounded-2xl focus:border-white/20 transition-all shadow-none"
                                         />
                                     </div>
                                     {errors.startTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.startTime.message}</p>}
                                 </div>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">End Date</Label>
-                                    <Controller
-                                        name="endDate"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        disabled={!startDate}
-                                                        className={cn(
-                                                            "h-14 w-full bg-white/5 border-white/10 text-white rounded-lg justify-start font-bold hover:bg-white/10 hover:text-white transition-all",
-                                                            !field.value && "text-zinc-600",
-                                                            !startDate && "opacity-30 cursor-not-allowed"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-3 h-5 w-5 text-zinc-700" />
-                                                        {field.value ? format(field.value, "PPP") : startDate ? "Pick an end date" : "Select start date first"}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-lg shadow-2xl" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) => date < (startDate || new Date())}
-                                                        initialFocus
-                                                        className="bg-transparent text-white"
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        )}
-                                    />
-                                    {errors.endDate && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.endDate.message}</p>}
-                                </div>
-
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">End Time</Label>
-                                    <div className="relative">
-                                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
-                                        <Input
-                                            {...register("endTime")}
-                                            type="time"
-                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-lg focus:border-purple-500/50 transition-all shadow-none"
-                                        />
-                                    </div>
-                                    {errors.endTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.endTime.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">State</Label>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">State</Label>
                                     <Controller
                                         name="state"
                                         control={control}
                                         render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white px-4 rounded-lg focus:ring-0 shadow-none hover:bg-white/10 transition-all">
+                                                <SelectTrigger className="h-16 bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all">
                                                     <SelectValue placeholder="Select State" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white px-4 rounded-lg p-2 max-h-60">
+                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60 shadow-2xl">
                                                     <SelectGroup>
                                                         {indianStates.map((st) => (
-                                                            <SelectItem key={st.isoCode} value={st.name} className="rounded-xl focus:bg-white/10 focus:text-white py-3">
+                                                            <SelectItem key={st.isoCode} value={st.name} className="rounded-xl focus:bg-white/5 focus:text-white py-4 font-bold transition-all cursor-pointer">
                                                                 {st.name}
                                                             </SelectItem>
                                                         ))}
@@ -558,20 +492,20 @@ const handleAIGenerated = (generatedData) => {
                                     />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">City</Label>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">City</Label>
                                     <Controller
                                         name="city"
                                         control={control}
                                         render={({ field }) => (
                                             <Select onValueChange={field.onChange} value={field.value} disabled={!selectedState}>
-                                                <SelectTrigger className="h-14 bg-white/5 border-white/10 text-white rounded-2xl focus:ring-0 shadow-none hover:bg-white/10 transition-all disabled:opacity-30">
+                                                <SelectTrigger className="h-16 bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all disabled:opacity-20">
                                                     <SelectValue placeholder="Select City" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60">
+                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60 shadow-2xl">
                                                     <SelectGroup>
                                                         {cities.map((ct) => (
-                                                            <SelectItem key={ct.name} value={ct.name} className="rounded-xl focus:bg-white/10 focus:text-white py-3">
+                                                            <SelectItem key={ct.name} value={ct.name} className="rounded-xl focus:bg-white/5 focus:text-white py-4 font-bold transition-all cursor-pointer">
                                                                 {ct.name}
                                                             </SelectItem>
                                                         ))}
@@ -585,40 +519,32 @@ const handleAIGenerated = (generatedData) => {
                         </div>
 
                         {/* SECTION 3: TICKETS & CAPACITY */}
-                        <div className="space-y-8 rounded-lg p-8 md:p-12 ">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors duration-300"
-                                        style={{
-                                            backgroundColor: `${themeColor}10`,
-                                            borderColor: `${themeColor}20`
-                                        }}
-                                    >
-                                        <Ticket className="w-4 h-4" style={{ color: themeColor }} />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-white tracking-tight">Tickets & Access</h2>
+                        <div className="space-y-10">
+                            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                                    <Ticket className="w-5 h-5 text-zinc-500" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-black text-white tracking-tight">Access & Capacity</h2>
+                                    <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest">Tickets and attendee limits</p>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">Ticket Type</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Ticket Type</Label>
                                     <Controller
                                         name="ticketType"
                                         control={control}
                                         render={({ field }) => (
-                                            <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-lg">
+                                            <div className="flex bg-zinc-900/50 border border-white/5 p-1 rounded-xl">
                                                 <button
                                                     type="button"
                                                     onClick={() => field.onChange("free")}
                                                     className={cn(
-                                                        "flex-1 py-3 rounded-xl text-xs font-black tracking-widest transition-all shadow-lg",
-                                                        field.value === "free" ? "text-white" : "text-zinc-500 hover:text-white"
+                                                        "flex-1 py-1 rounded-lg text-[10px] font-black tracking-[0.2em] ",
+                                                        field.value === "free" ? "bg-white text-black  scale-80" : "text-zinc-500 hover:text-zinc-300"
                                                     )}
-                                                    style={{
-                                                        backgroundColor: field.value === "free" ? themeColor : "transparent",
-                                                    }}
                                                 >
                                                     FREE
                                                 </button>
@@ -626,12 +552,9 @@ const handleAIGenerated = (generatedData) => {
                                                     type="button"
                                                     onClick={() => field.onChange("paid")}
                                                     className={cn(
-                                                        "flex-1 py-3 rounded-xl text-xs font-black tracking-widest transition-all shadow-lg",
-                                                        field.value === "paid" ? "text-white" : "text-zinc-500 hover:text-white"
+                                                        "flex-1 py-4 rounded-xl text-[10px] font-black tracking-[0.2em] ",
+                                                        field.value === "paid" ? "bg-white text-black shadow-xl scale-80" : "text-zinc-500 hover:text-zinc-300"
                                                     )}
-                                                    style={{
-                                                        backgroundColor: field.value === "paid" ? themeColor : "transparent",
-                                                    }}
                                                 >
                                                     PAID
                                                 </button>
@@ -641,79 +564,67 @@ const handleAIGenerated = (generatedData) => {
                                 </div>
 
                                 {ticketType === "paid" && (
-                                    <div className="space-y-3">
-                                        <Label className="text-xs font-bold text-zinc-400 ml-1">Ticket Price</Label>
+                                    <div className="space-y-4">
+                                        <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Ticket Price</Label>
                                         <div className="relative group">
-                                            <span
-                                                className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-bold transition-colors"
-                                                style={{ color: themeColor }}
-                                            >
-                                                ₹
-                                            </span>
+                                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 font-black text-lg">₹</span>
                                             <Input
                                                 {...register("ticketPrice", { valueAsNumber: true })}
                                                 type="number"
-                                                placeholder="0.00"
-                                                className="h-14 pl-10 bg-white/5 border-white/10 text-white font-bold rounded-2xl transition-all shadow-none"
-                                                style={{
-                                                    borderColor: `${themeColor}20`,
-                                                }}
-                                                onFocus={(e) => e.target.style.borderColor = themeColor}
-                                                onBlur={(e) => e.target.style.borderColor = `${themeColor}20`}
+                                                placeholder="0"
+                                                className="h-16 pl-12 bg-zinc-900/50 border-white/5 text-white font-bold text-xl rounded-2xl focus:border-white/20 transition-all shadow-none"
                                             />
                                         </div>
                                         {errors.ticketPrice && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.ticketPrice.message}</p>}
                                     </div>
                                 )}
 
-                                <div className="space-y-3">
-                                    <Label className="text-xs font-bold text-zinc-400 ml-1">Capacity</Label>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Total Capacity</Label>
                                     <div className="relative">
-                                        <Users
-                                            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors"
-                                            style={{ color: themeColor }}
-                                        />
+                                        <Users className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
                                         <Input
                                             {...register("capacity", { valueAsNumber: true })}
                                             type="number"
-                                            className="h-14 pl-12 bg-white/5 border-white/10 text-white font-bold rounded-2xl transition-all shadow-none"
-                                            style={{
-                                                borderColor: `${themeColor}20`,
-                                            }}
-                                            onFocus={(e) => e.target.style.borderColor = themeColor}
-                                            onBlur={(e) => e.target.style.borderColor = `${themeColor}20`}
+                                            className="h-16 pl-14 bg-zinc-900/50 border-white/5 text-white font-bold text-xl rounded-2xl focus:border-white/20 transition-all shadow-none"
                                         />
                                     </div>
+                                    {errors.capacity && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.capacity.message}</p>}
                                 </div>
                             </div>
                         </div>
 
                         {/* SUBMIT BUTTON */}
-                        <div className="pt-10">
+                        <div className="pt-12 space-y-8">
                             <Button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-[60vh] h-8 bg-white text-black hover:bg-zinc-200 rounded-lg font-semibold text-lg tracking-tight transition-all active:scale-[0.98]  flex items-center justify-center gap-4"
+                                className="w-full h-10 bg-white text-black hover:bg-zinc-200 rounded-xl font-bold text-xl tracking-tight transition-all active:scale-[0.98]  flex items-center justify-center gap-4 group"
                             >
                                 {isLoading ? (
                                     <>
-                                        <Loader2 className="w-6 h-6 animate-spin" />
-                                        Processing...
+                                        <Loader2 className="w-8 h-8 animate-spin" />
+                                        Launching...
                                     </>
                                 ) : (
                                     <>
-                                        Launch Event
-                                        <ArrowRight className="w-6 h-6" />
+                                        Launch Your Event
+                                        <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                                            <ArrowRight className="w-6 h-6" />
+                                        </div>
                                     </>
                                 )}
                             </Button>
-                            <p className="text-center text-zinc-600 text-[10px] font-bold uppercase tracking-[0.2em] mt-6">
-                                By launching, you agree to our terms of service
-                            </p>
+                            <div className="flex items-center justify-center gap-3 text-zinc-600 font-bold text-[9px] uppercase tracking-[0.4em]">
+                                <span>Secured by AIvento</span>
+                                <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                <span>Instant Deployment</span>
+                            </div>
                         </div>
                     </div>
                 </form>
-</div>
+            </div>
+
 
             {/* MODALS */}
             <UnsplashImagePicker

@@ -19,12 +19,8 @@ const SearchLocationBar = () => {
     const [showSearchResult, setShowSearchResult] = useState(false)
     const searchRef = useRef(null);
 
-    // const [stateSearch, setStateSearch] = useState("");
-    // const [citySearch, setCitySearch] = useState("");
-
     const [selectedState, setSelectedState] = useState("");
     const [selectedCity, setSelectedCity] = useState("")
-
 
     const { mutate: updateLocation } = useConvexMutation(
         api.users.completeOnBoarding
@@ -88,175 +84,131 @@ const SearchLocationBar = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [])
 
-    useEffect(() => {
-        if (searchQuery.length >= 2) {
-            setShowSearchResult(true);
-        }
-    }, [searchQuery]);
-
-    const handleLocationSelect = async (city, state) => {
-        try {
-            if (currentUser?.interests && currentUser?.location) {
-                await updateLocation({
-                    location: { city, state, country: "India" },
-                    interests: currentUser.interests
-                })
-            }
-            const slug = createLocationSlug(city, state);
-            router.push(`/explore/${slug}`)
-        } catch (error) {
-            console.log("Failed to update location", error)
-        }
+    const handleLocationSelect = async (stateName) => {
+        setSelectedState(stateName);
+        setSelectedCity("");
     }
 
-    // const filteredStates = indianStates.filter((state) =>
-    //     state.name.toLowerCase().includes(stateSearch.toLowerCase())
-    // );
-
-    // const filteredCities = cities.filter((city) =>
-    //     city.name.toLowerCase().includes(citySearch.toLowerCase())
-    // );
-
     return (
-        <div className='flex items-center w-full max-w-3xl mx-4' ref={searchRef}>
-            <div className='relative flex flex-1 items-center border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300'>
+        <div className='flex items-center w-full max-w-3xl mx-2 md:mx-4' ref={searchRef}>
+            <div className='relative flex flex-1 items-center border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300 bg-zinc-900/50 md:bg-transparent'>
                 {/* Search Part */}
-                <div className='relative flex-1 flex items-center pl-3 min-w-[200px]'>
-                    <Search className="w-4 h-4 text-zinc-500" />
+                <div className='relative flex-1 flex items-center pl-2 md:pl-3 min-w-0'>
+                    <Search className="w-3.5 h-3.5 md:w-4 md:h-4 text-zinc-500 shrink-0" />
                     <Input
                         type="text"
                         placeholder="Search events..."
-                        className="bg-transparent border-none focus-visible:ring-0 text-sm text-white placeholder:text-zinc-600 w-full h-9 pr-4 shadow-none"
+                        className="bg-transparent border-none focus-visible:ring-0 text-xs md:text-sm text-white placeholder:text-zinc-600 w-full h-8 md:h-9 pr-2 md:pr-4 shadow-none"
                         onFocus={() => { if (searchQuery.length >= 2) setShowSearchResult(true) }}
                         onChange={handleSearchInput}
                     />
                 </div>
 
-                {/* Divider */}
-                <div className='h-5 w-px bg-white/10'></div>
+                {/* Divider - Hidden on Mobile */}
+                <div className='hidden md:block h-5 w-px bg-white/10'></div>
 
-                {/* State Select */}
-                <Select
-                    value={selectedState}
-                    onValueChange={(value) => {
-                        setSelectedState(value);
-                        setSelectedCity("");
-                        if (value && selectedState) {
-                            handleLocationSelect(value, selectedState)
-                        }
-                    }}
-                >
-                    <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[13px] h-9 hover:text-white transition-colors shadow-none rounded-none">
-                        <SelectValue placeholder="State" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
-                        {/* 🔍 SEARCH BAR */}
-                        {/* <div className="p-2 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
-                            <Input
-                                placeholder="Search state..."
-                                className="h-8 text-xs bg-white/5 border-none focus:ring-0"
-                                onChange={(e) => setStateSearch(e.target.value)}
-                            />
-                        </div> */}
-                        <SelectGroup>
-                            {indianStates.map((state) => (
-                                <SelectItem key={state.isoCode} value={state.name} className="focus:bg-white/10 focus:text-white text-xs">
-                                    {state.name}
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                {/* State Select - Hidden on Mobile */}
+                <div className='hidden md:block'>
+                    <Select
+                        value={selectedState}
+                        onValueChange={handleLocationSelect}
+                    >
+                        <SelectTrigger className="w-[100px] lg:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[11px] lg:text-[13px] h-9 hover:text-white transition-colors shadow-none rounded-none">
+                            <SelectValue placeholder="State" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                            <SelectGroup>
+                                {indianStates.map((state) => (
+                                    <SelectItem key={state.isoCode} value={state.name} className="focus:bg-white/10 focus:text-white text-xs">
+                                        {state.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
 
-                {/* Divider */}
-                <div className='h-5 w-px bg-white/10'></div>
+                {/* Divider - Hidden on Mobile */}
+                <div className='hidden md:block h-5 w-px bg-white/10'></div>
 
-                {/* City Select */}
-                <Select
-                    value={selectedCity}
-                    onValueChange={(value) => {
-                        setSelectedCity(value);
-                        handleLocationChange(selectedState, value);
-                    }}
-                    disabled={!selectedState}
-                >
-                    <SelectTrigger className="w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[13px] h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none">
-                        <SelectValue placeholder="City" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
-                        {/* 🔍 SEARCH */}
-                        {/* <div className="p-2 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
-                            <Input
-                                placeholder="Search city..."
-                                className="h-8 text-xs bg-white/5 border-none focus:ring-0"
-                                onChange={(e) => setCitySearch(e.target.value)}
-                            />
-                        </div> */}
-                        <SelectGroup>
-                            {cities.map((city) => (
-                                <SelectItem key={city.name} value={city.name} className="focus:bg-white/10 focus:text-white text-xs">
-                                    {city.name}
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                {/* City Select - Hidden on Mobile */}
+                <div className='hidden md:block'>
+                    <Select
+                        value={selectedCity}
+                        onValueChange={(value) => {
+                            setSelectedCity(value);
+                            handleLocationChange(selectedState, value);
+                        }}
+                        disabled={!selectedState}
+                    >
+                        <SelectTrigger className="w-[100px] lg:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[11px] lg:text-[13px] h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none">
+                            <SelectValue placeholder="City" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                            <SelectGroup>
+                                {cities.map((city) => (
+                                    <SelectItem key={city.name} value={city.name} className="focus:bg-white/10 focus:text-white text-xs">
+                                        {city.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
 
                 {/* Search Results Dropdown */}
                 {showSearchResult && (
-                    <div className='absolute top-full left-0 mt-3 w-full min-w-[450px] bg-zinc-950/98 border border-white/10 rounded-2xl shadow-2xl z-50 max-h-[480px] overflow-hidden backdrop-blur-3xl'>
+                    <div className='absolute top-full left-0 mt-3 w-full md:min-w-[450px] bg-zinc-950/98 border border-white/10 rounded-2xl shadow-2xl z-50 max-h-[480px] overflow-hidden backdrop-blur-3xl'>
                         {searchLoading ? (
-                            <div className='p-8 flex flex-col items-center justify-center gap-3'>
-                                <Loader2 className='w-6 h-6 animate-spin text-white' />
-                                <p className='text-xs text-zinc-500 font-medium tracking-wide'>Searching events...</p>
+                            <div className='p-12 flex flex-col items-center justify-center gap-4'>
+                                <Loader2 className='w-6 h-6 animate-spin text-[#16d59e]' />
+                                <p className='text-xs text-zinc-500 font-bold uppercase tracking-widest'>Searching events...</p>
                             </div>
                         ) : searchResults && searchResults.length > 0 ? (
                             <div className='py-4'>
                                 <div className='px-5 pb-3 flex items-center justify-between border-b border-white/5 mb-2'>
-                                    <p className='text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]'>Suggested Events</p>
-                                    <p className='text-[10px] font-bold text-white bg-white/5 px-2 py-0.5 rounded-full'>{searchResults.length} results</p>
+                                    <span className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]'>Top Results</span>
+                                    <span className='text-[10px] font-bold text-[#16d59e] bg-[#16d59e]/10 px-2 py-0.5 rounded-full'>{searchResults.length} found</span>
                                 </div>
-                                <div className='space-y-1 px-2 pb-2'>
+                                <div className='px-2'>
                                     {searchResults.map((event) => (
-                                        <button
+                                        <div
                                             key={event._id}
-                                            className="w-full group/item px-3 py-3 text-left hover:bg-white/[0.05] rounded-xl transition-all duration-300 flex items-center gap-4 border border-transparent hover:border-white/5"
                                             onClick={() => handleEventClick(event.slug)}
+                                            className='group flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 cursor-pointer transition-all border border-transparent hover:border-white/5'
                                         >
-                                            <div className='w-11 h-11 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-2xl shrink-0 group-hover/item:scale-110 group-hover/item:border-white/20 transition-all duration-300 shadow-inner'>
+                                            <div className='w-12 h-12 rounded-lg bg-zinc-900 border border-white/5 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform'>
                                                 {getCategoryIcon(event.category)}
                                             </div>
                                             <div className='flex-1 min-w-0'>
-                                                <p className='font-bold text-sm text-zinc-100 group-hover/item:text-white transition-colors mb-1 truncate'>
-                                                    {event.title}
-                                                </p>
-                                                <div className='flex items-center gap-4 text-[10px] font-bold text-zinc-500'>
-                                                    <span className='flex items-center gap-1.5 group-hover/item:text-zinc-400 transition-colors'>
-                                                        <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                                                        {format(event.startDate, "MMM dd, yyyy")}
-                                                    </span>
-                                                    <span className='flex items-center gap-1.5 group-hover/item:text-zinc-400 transition-colors'>
-                                                        <MapPin className='w-3.5 h-3.5 text-zinc-500' />
+                                                <h4 className='text-sm font-bold text-white truncate group-hover:text-[#16d59e] transition-colors'>{event.title}</h4>
+                                                <div className='flex items-center gap-3 mt-1'>
+                                                    <div className='flex items-center gap-1.5 text-[10px] text-zinc-500 font-bold'>
+                                                        <Calendar className='w-3 h-3 text-[#16d59e]' />
+                                                        {format(new Date(event.startDate), "MMM dd, yyyy")}
+                                                    </div>
+                                                    <div className='flex items-center gap-1.5 text-[10px] text-zinc-500 font-bold'>
+                                                        <MapPin className='w-3 h-3 text-[#16d59e]' />
                                                         {event.city}
-                                                    </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className='opacity-0 group-hover/item:opacity-100 transition-all duration-300 pr-2 transform translate-x-2 group-hover/item:translate-x-0'>
-                                                <ArrowRight className="w-4 h-4 text-white" />
-                                            </div>
-                                        </button>
+                                            <ArrowRight className='w-4 h-4 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all opacity-0 group-hover:opacity-100' />
+                                        </div>
                                     ))}
                                 </div>
-                            </div>
-                        ) : searchResults && searchResults.length === 0 && searchQuery.trim().length >= 2 ? (
-                            <div className='p-10 text-center space-y-3'>
-                                <div className='w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4'>
-                                    <Search className='w-8 h-8 text-zinc-600' />
+                                <div className='mt-2 p-3 bg-zinc-900/50 border-t border-white/5 flex justify-center'>
+                                    <button className='text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-white transition-colors'>View all results</button>
                                 </div>
-                                <p className='text-base font-bold text-white'>No events found</p>
-                                <p className='text-xs text-zinc-500 leading-relaxed max-w-[200px] mx-auto'>Try searching with a different keyword or category</p>
                             </div>
-                        ) : null}
+                        ) : (
+                            <div className='p-12 flex flex-col items-center justify-center gap-3'>
+                                <div className='w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center border border-white/5'>
+                                    <Search className='w-5 h-5 text-zinc-700' />
+                                </div>
+                                <p className='text-xs text-zinc-500 font-bold uppercase tracking-widest'>No events found</p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -264,4 +216,4 @@ const SearchLocationBar = () => {
     )
 }
 
-export default SearchLocationBar;
+export default SearchLocationBar
