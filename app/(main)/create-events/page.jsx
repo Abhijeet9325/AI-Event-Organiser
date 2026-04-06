@@ -713,7 +713,7 @@ const handleAIGenerated = (generatedData) => {
                         </div>
                     </div>
                 </form>
-            </div>
+</div>
 
             {/* MODALS */}
             <UnsplashImagePicker

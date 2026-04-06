@@ -371,7 +371,7 @@ export default function EventDashboardPage() {
         {/* Stats Grid - Premium Design */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           {/* Capacity Stat */}
-          <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-sm">
+          <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
             <div className="mb-4 w-12 h-12 bg-purple-900 rounded-xl flex items-center justify-center">
               <Users className="w-6 h-6 text-purple-400" />
             </div>
@@ -381,7 +381,7 @@ export default function EventDashboardPage() {
           </div>
 
           {/* Checked In Stat */}
-          <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-sm">
+          <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
             <div className="mb-4 w-12 h-12 bg-green-900 rounded-xl flex items-center justify-center">
               <CheckCircle className="w-6 h-6 text-green-400" />
             </div>
@@ -396,7 +396,7 @@ export default function EventDashboardPage() {
 
           {/* Revenue or Check-in Rate */}
           {event.ticketType === "paid" ? (
-            <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-sm">
+            <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
               <div className="mb-4 w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-blue-400" />
               </div>
@@ -405,7 +405,7 @@ export default function EventDashboardPage() {
               <p className="text-xs text-slate-400 mt-2">From {stats.totalRegistrations} attendees</p>
             </div>
           ) : (
-            <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-sm">
+            <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
               <div className="mb-4 w-12 h-12 bg-orange-900 rounded-xl flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-orange-400" />
               </div>
@@ -416,7 +416,7 @@ export default function EventDashboardPage() {
           )}
 
           {/* Pending Stat */}
-          <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-sm">
+          <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
             <div className="mb-4 w-12 h-12 bg-amber-900 rounded-xl flex items-center justify-center">
               <Users className="w-6 h-6 text-amber-400" />
             </div>
@@ -427,8 +427,8 @@ export default function EventDashboardPage() {
         </div>
 
         {/* Attendee Management Section */}
-        <div className="bg-gray-900 rounded-xl border border-gray-900 shadow-sm overflow-hidden">
-          <div className="border-b border-slate-700 px-6 sm:px-8 py-6">
+        <div className="bg-gray-950 rounded-xl border border-gray-900  overflow-hidden">
+          <div className="border-b border-slate-800 px-6 sm:px-8 py-6">
             <h2 className="text-2xl font-bold text-white">Attendee Management</h2>
           </div>
 
@@ -446,7 +446,7 @@ export default function EventDashboardPage() {
               </div>
               <Button
                 onClick={handleExportPDF}
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium rounded-xl border-0 shadow-lg"
+                className="px-6 py-2.5 bg-white text-black font-medium rounded-lg mt-1 border-0"
               >
                 <FileText className="w-4 h-4 mr-2" />
                 Export PDF
@@ -455,7 +455,7 @@ export default function EventDashboardPage() {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6 bg-slate-700 rounded-lg p-1">
+              <TabsList className="mb-6 bg-gray-950 rounded-lg p-1">
                 <TabsTrigger value="all" className="rounded-md text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white">
                   All ({stats.totalRegistrations})
                 </TabsTrigger>
