@@ -317,7 +317,7 @@ const handleAIGenerated = (generatedData) => {
                                                 className={cn(
                                                     "w-10 h-10 rounded-xl transition-all active:scale-90 relative group/color",
                                                     themeColor === color ? "scale-110 shadow-[0_0_20px_rgba(255,255,255,0.1)] ring-2 ring-white ring-offset-4 ring-offset-zinc-950" : "hover:scale-105",
-                                                    !hasPro && color !== "#000000" && "opacity-40 grayscale-[0.8]"
+                                                    !hasPro && color !== "#000000" && "opacity-80 grayscale-[0.8]"
                                                 )}
                                                 style={{ backgroundColor: color }}
                                             >
@@ -352,8 +352,8 @@ const handleAIGenerated = (generatedData) => {
                     <div className="lg:col-span-7 space-y-16">
                         {/* SECTION 1: BASIC INFO */}
                         <div className="space-y-10">
-                            <div className="flex items-center gap-4 border-b border-white/5 pb-6">
-                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                            <div className="flex items-center gap-4 pb-6">
+                                <div className="w-10 h-10 flex items-center justify-center  ">
                                     <Sparkles className="w-5 h-5 text-zinc-500" />
                                 </div>
                                 <div>
@@ -434,7 +434,7 @@ const handleAIGenerated = (generatedData) => {
                                         render={({ field }) => (
                                             <Popover>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className={cn("h-16 w-full bg-zinc-900/50 border-white/5 text-white rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 hover:text-white transition-all shadow-none", !field.value && "text-zinc-600")}>
+                                                    <Button variant="outline" className={cn("h-16 w-full bg-zinc-900/50 rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 ", !field.value && "text-zinc-600")}>
                                                         <CalendarIcon className="mr-4 h-5 w-5 text-zinc-700" />
                                                         {field.value ? format(field.value, "PPP") : "Select a start date"}
                                                     </Button>

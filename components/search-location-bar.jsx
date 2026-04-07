@@ -90,30 +90,30 @@ const SearchLocationBar = () => {
     }
 
     return (
-        <div className='flex items-center w-full max-w-3xl mx-2 md:mx-4' ref={searchRef}>
+        <div className='flex items-center w-full max-w-3xl mx-0.5 md:mx-4' ref={searchRef}>
             <div className='relative flex flex-1 items-center border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300 bg-zinc-900/50 md:bg-transparent'>
                 {/* Search Part */}
-                <div className='relative flex-1 flex items-center pl-2 md:pl-3 min-w-0'>
-                    <Search className="w-3.5 h-3.5 md:w-4 md:h-4 text-zinc-500 shrink-0" />
+                <div className='relative flex-1 flex items-center pl-1.5 md:pl-3 min-w-0'>
+                    <Search className="w-3 h-3 md:w-4 md:h-4 text-zinc-500 shrink-0" />
                     <Input
                         type="text"
-                        placeholder="Search events..."
-                        className="bg-transparent border-none focus-visible:ring-0 text-xs md:text-sm text-white placeholder:text-zinc-600 w-full h-8 md:h-9 pr-2 md:pr-4 shadow-none"
+                        placeholder="Search..."
+                        className="bg-transparent border-none focus-visible:ring-0 text-[10px] md:text-sm text-white placeholder:text-zinc-600 w-full h-8 md:h-9 pr-1 md:pr-4 shadow-none"
                         onFocus={() => { if (searchQuery.length >= 2) setShowSearchResult(true) }}
                         onChange={handleSearchInput}
                     />
                 </div>
 
-                {/* Divider - Hidden on Mobile */}
-                <div className='hidden md:block h-5 w-px bg-white/10'></div>
+                {/* Divider */}
+                <div className='h-4 md:h-5 w-px'></div>
 
-                {/* State Select - Hidden on Mobile */}
-                <div className='hidden md:block'>
+                {/* State Select */}
+                <div>
                     <Select
                         value={selectedState}
                         onValueChange={handleLocationSelect}
                     >
-                        <SelectTrigger className="w-[100px] lg:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[11px] lg:text-[13px] h-9 hover:text-white transition-colors shadow-none rounded-none">
+                        <SelectTrigger className="w-[55px] md:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors shadow-none rounded-none px-1 md:px-3">
                             <SelectValue placeholder="State" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
@@ -128,11 +128,11 @@ const SearchLocationBar = () => {
                     </Select>
                 </div>
 
-                {/* Divider - Hidden on Mobile */}
-                <div className='hidden md:block h-5 w-px bg-white/10'></div>
+                {/* Divider */}
+                <div className='h-4 md:h-5 w-px'></div>
 
-                {/* City Select - Hidden on Mobile */}
-                <div className='hidden md:block'>
+                {/* City Select */}
+                <div>
                     <Select
                         value={selectedCity}
                         onValueChange={(value) => {
@@ -141,7 +141,7 @@ const SearchLocationBar = () => {
                         }}
                         disabled={!selectedState}
                     >
-                        <SelectTrigger className="w-[100px] lg:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[11px] lg:text-[13px] h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none">
+                        <SelectTrigger className="w-[55px] md:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none px-1 md:px-3">
                             <SelectValue placeholder="City" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">

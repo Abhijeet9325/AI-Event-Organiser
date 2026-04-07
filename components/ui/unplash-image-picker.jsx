@@ -4,7 +4,7 @@ import { Input } from './input';
 import { Button } from './button';
 import { Loader2, Search, Image as ImageIcon, Sparkles, X } from 'lucide-react';
 import Image from 'next/image';
-import { Badge } from './badge';
+
 
 const POPULAR_CATEGORIES = [
     { label: "Conference", query: "business conference" },
@@ -59,7 +59,7 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-2xl bg-[#0A0A0A] border-white/5 p-0 overflow-hidden rounded-[2.5rem] shadow-2xl">
+            <DialogContent showCloseButton={false} className="sm:max-w-2xl bg-[#0A0A0A] border-white/5 p-0 overflow-hidden rounded-[2.5rem] shadow-2xl">
                 {/* Decorative background glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-purple-500/10 blur-[100px] pointer-events-none" />
 
@@ -69,7 +69,7 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                         <DialogHeader className="mb-6">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center border border-white/10 shadow-inner">
+                                    <div className="w-12 h-12  flex items-center justify-center ">
                                         <Sparkles className='w-6 h-6 text-purple-400' />
                                     </div>
                                     <div>
@@ -83,7 +83,7 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/10 transition-all"
+                                    className="w-10 h-10 mb-6 flex items-center justify-center text-zinc-500"
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
@@ -102,7 +102,7 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Search for anything (e.g. 'sunset', 'concert')..."
-                                    className="pl-12 h-14 bg-white/5 border-white/10 text-white text-base placeholder:text-zinc-600 rounded-2xl focus:border-purple-500/50 transition-all shadow-none backdrop-blur-md"
+                                    className="pl-12 h-10 bg-white/5 border-white/10 text-white text-base placeholder:text-zinc-600 rounded-2xl focus:border-purple-500/50 transition-all shadow-none backdrop-blur-md"
                                 />
                             </div>
 
@@ -110,7 +110,7 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                             <Button
                                 type="submit"
                                 disabled={loading || !query.trim()}
-                                className="bg-white text-black hover:bg-zinc-200 h-14 px-8 rounded-2xl font-bold transition-all active:scale-[0.97] shadow-xl shadow-white/5 flex items-center justify-center"
+                                className="bg-white text-black hover:bg-zinc-200 h-9 px-6 mt-0.5 rounded-lg font-semibold flex items-center justify-center"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Search"}
                             </Button>
@@ -160,18 +160,13 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                                         <Image
                                             src={image.urls.small}
                                             alt={image.description || "Unsplash photo"}
-                                            className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-700'
+                                            className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
                                             width={400}
                                             height={250}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4">
-                                            <div className="w-full flex items-center justify-between translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                                <span className="text-white text-[10px] font-black uppercase tracking-widest bg-purple-600 px-3 py-1.5 rounded-lg shadow-lg">
-                                                    Use Photo
-                                                </span>
-                                                <div className="text-white/60 text-[10px] font-medium">
-                                                    by {image.user.name}
-                                                </div>
+                                        <div className="absolute inset-0  flex items-end p-4">
+                                            <div className="w-full flex items-center justify-between">
+                                               
                                             </div>
                                         </div>
                                     </button>
@@ -199,10 +194,8 @@ const UnsplashImagePicker = ({ isOpen, onClose, onSelect }) => {
                                 rel='noopener noreferrer'
                                 className='flex items-center gap-1.5 group'
                             >
-                                <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center overflow-hidden">
-                                    <div className="w-3 h-3 bg-black" />
-                                </div>
-                                <span className="text-[11px] font-bold text-zinc-400 group-hover:text-white transition-colors">Unsplash</span>
+
+                                <span className="text-[11px] font-bold text-zinc-400 ">Unsplash</span>
                             </a>
                         </div>
                         <p className="text-[10px] font-medium text-zinc-500">

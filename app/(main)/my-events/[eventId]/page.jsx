@@ -182,25 +182,23 @@ export default function EventDashboardPage() {
           </thead>
           <tbody>
             ${registrations
-              .map(
-                (reg) => `
+        .map(
+          (reg) => `
               <tr>
                 <td><strong>${reg.attendeeName}</strong></td>
                 <td>${reg.attendeeEmail}</td>
-                <td><span class="${reg.checkedIn ? "checked-in" : "pending"}">${
-                  reg.checkedIn ? "✓ Checked In" : "⏳ Pending"
-                }</span></td>
+                <td><span class="${reg.checkedIn ? "checked-in" : "pending"}">${reg.checkedIn ? "✓ Checked In" : "⏳ Pending"
+            }</span></td>
                 <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                <td>${
-                  reg.checkedInAt
-                    ? new Date(reg.checkedInAt).toLocaleString()
-                    : "-"
-                }</td>
+                <td>${reg.checkedInAt
+              ? new Date(reg.checkedInAt).toLocaleString()
+              : "-"
+            }</td>
                 <td><code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 11px;">${reg.qrCode}</code></td>
               </tr>
             `
-              )
-              .join("")}
+        )
+        .join("")}
           </tbody>
         </table>
 
@@ -286,19 +284,18 @@ export default function EventDashboardPage() {
             <Badge variant="secondary" className="px-4 py-2 text-sm font-semibold bg-slate-700 text-slate-100">
               {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
             </Badge>
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              stats.isEventPast 
-                ? 'bg-slate-600 text-slate-200' 
-                : stats.isEventToday 
-                ? 'bg-red-900 text-red-100' 
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${stats.isEventPast
+              ? 'bg-slate-600 text-slate-200'
+              : stats.isEventToday
+                ? 'bg-red-900 text-red-100'
                 : 'bg-blue-900 text-blue-100'
-            }`}>
+              }`}>
               {stats.isEventPast ? 'Event Ended' : stats.isEventToday ? 'Today' : 'Upcoming'}
             </span>
           </div>
-          
+
           <h1 className="text-4xl font-bold text-white mb-6">{event.title}</h1>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-300 mb-8">
             <div className="flex items-start gap-3">
               <Calendar className="w-5 h-5 mt-0.5 text-blue-400 flex-shrink-0" />
@@ -307,7 +304,7 @@ export default function EventDashboardPage() {
                 <p className="text-base font-medium mt-1 text-slate-100">{format(event.startDate, "PPpp")}</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 mt-0.5 text-emerald-400 flex-shrink-0" />
               <div>
@@ -339,7 +336,8 @@ export default function EventDashboardPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               onClick={() => router.push(`/events/${event.slug}`)}
-              className="flex-1 sm:flex-none px-6 py-2.5 bg-white text-slate-900 font-medium rounded-xl"
+              className="flex-1  transition-all duration-200 
+  hover:bg-white/90 hover:shadow-md active:scale-[0.98] sm:flex-none px-6 py-2.5 bg-white text-slate-900 font-medium rounded-xl"
             >
               <Eye className="w-4 h-4 mr-2" />
               View Public Page
@@ -347,7 +345,9 @@ export default function EventDashboardPage() {
             <Button
               onClick={handleDelete}
               disabled={isDeleting}
-              className="flex-1 sm:flex-none px-6 py-2.5 bg-red-900 text-red-100 font-medium rounded-xl border border-red-700"
+              className="flex-1 sm:flex-none px-6 py-2.5 bg-red-900 text-red-100 font-medium rounded-xl border border-red-700 
+  transition-all duration-200 
+  hover:bg-red-800 hover:shadow-md active:scale-[0.98]"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               {isDeleting ? "Deleting..." : "Delete Event"}
@@ -360,7 +360,10 @@ export default function EventDashboardPage() {
           <div className="mb-12 bg-white rounded-xl">
             <button
               onClick={() => setShowQRScanner(true)}
-              className="w-full flex items-center justify-center gap-3 text-black font-semibold text-sm py-3"
+              className="w-full flex items-center justify-center gap-3 
+  text-black font-semibold text-sm py-3 rounded-xl 
+  transition-all duration-200 will-change-transform
+  hover:bg-zinc-100 hover:shadow-md active:scale-[0.98]"
             >
               <QrCode className="w-6 h-6" />
               Scan QR Code to Check-In Attendees
@@ -388,8 +391,8 @@ export default function EventDashboardPage() {
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Checked In</p>
             <p className="text-3xl font-bold text-white">{stats.checkedInCount}</p>
             <p className="text-xs text-slate-400 mt-2">
-              {stats.totalRegistrations > 0 
-                ? Math.round((stats.checkedInCount / stats.totalRegistrations) * 100) 
+              {stats.totalRegistrations > 0
+                ? Math.round((stats.checkedInCount / stats.totalRegistrations) * 100)
                 : 0}% of total
             </p>
           </div>

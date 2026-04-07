@@ -37,6 +37,7 @@ import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -437,8 +438,14 @@ export default function Home() {
       <footer className="py-8 px-6 border-t border-white/5 bg-black">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-14">
           <div className="space-y-6 text-left">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#16d59e] flex items-center justify-center font-black text-black text-lg">A</div>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/alventologo.svg"
+                alt="logo"
+                width={28}
+                height={28}
+                className="md:w-[36px] md:h-[26px] shrink-0 filter invert"
+              />
               <span className={`text-2xl font-bold tracking-tighter ${bricolageGrotesque.className}`}>AIvento</span>
             </Link>
             <p className="text-zinc-600 text-sm max-w-[280px] leading-relaxed font-medium">
@@ -468,7 +475,10 @@ export default function Home() {
         </div>
 
         <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6 text-zinc-700 text-[10px] font-black uppercase tracking-[0.3em]">
-          <div>&copy; 2026 AIvento Systems Inc.</div>
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+            <div>&copy; 2026 AIvento Systems Inc.</div>
+            <div className="text-zinc-500 normal-case font-medium  text-xs tracking-normal">Made with ❤️ by Abhijit Wankhade</div>
+          </div>
           <div className="flex gap-10">
             <Link href="#" className="hover:text-white transition-colors">Security Report</Link>
             <Link href="#" className="hover:text-white transition-colors">Data Privacy</Link>
