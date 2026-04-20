@@ -52,7 +52,10 @@ export function AiEventCreator({ onEventGenerated }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-all">
+        <button 
+          type="button"
+          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-all"
+        >
           <Sparkles className="w-3 h-3" />
           AI Creator
         </button>

@@ -62,6 +62,8 @@ const CreateEvent = () => {
     const { data: currentUser } = useConvexQuery(api.users.getCurrentUser)
     const { mutate: createEvent, isLoading } = useConvexMutation(api.events.createEvent)
 
+
+    
     const {
         register,
         watch,
@@ -130,15 +132,30 @@ const CreateEvent = () => {
         }
     };
 
-const handleAIGenerated = (generatedData) => {
-    console.log("AI DATA:", generatedData) // 👈 must
-    setValue("title", generatedData.title)
-    setValue("description", generatedData.description)
-    setValue("category", generatedData.category)
-    setValue("capacity", generatedData.suggestedCapacity)
-    setValue("ticketType", generatedData.suggestedTicketType)
-    toast.success("Event details filled! Customize as needed")
-}
+    const handleAIGenerated = (generatedData) => {
+        console.log("AI DATA:", generatedData)
+        const fields = {
+            title: generatedData.title,
+            description: generatedData.description,
+            category: generatedData.category,
+            capacity: generatedData.suggestedCapacity,
+            ticketType: generatedData.suggestedTicketType
+        };
+
+        Object.entries(fields).forEach(([key, value]) => {
+            if (value !== undefined) {
+                setValue(key, value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true
+                });
+            }
+        });
+
+        toast.success("Event details filled! Customize as needed");
+    };
+
+
 
 
 
@@ -434,7 +451,7 @@ const handleAIGenerated = (generatedData) => {
                                         render={({ field }) => (
                                             <Popover>
                                                 <PopoverTrigger asChild>
-                                                    <Button variant="outline" className={cn("h-16 w-full bg-zinc-900/50 rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 ", !field.value && "text-zinc-600")}>
+                                                    <Button variant="outline" type="button" className={cn("h-16 w-full bg-zinc-900/50 rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 ", !field.value && "text-zinc-600")}>
                                                         <CalendarIcon className="mr-4 h-5 w-5 text-zinc-700" />
                                                         {field.value ? format(field.value, "PPP") : "Select a start date"}
                                                     </Button>
@@ -456,6 +473,35 @@ const handleAIGenerated = (generatedData) => {
                                 </div>
 
                                 <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">End Date</Label>
+                                    <Controller
+                                        name="endDate"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button variant="outline" type="button" className={cn("h-16 w-full bg-zinc-900/50 rounded-2xl justify-start px-6 font-bold hover:bg-zinc-800/50 ", !field.value && "text-zinc-600")}>
+                                                        <CalendarIcon className="mr-4 h-5 w-5 text-zinc-700" />
+                                                        {field.value ? format(field.value, "PPP") : "Select an end date"}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-white/10 rounded-2xl shadow-2xl" align="start">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={field.value}
+                                                        onSelect={field.onChange}
+                                                        disabled={(date) => date < (startDate || new Date())}
+                                                        initialFocus
+                                                        className="bg-transparent text-white p-4"
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        )}
+                                    />
+                                    {errors.endDate && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.endDate.message}</p>}
+                                </div>
+
+                                <div className="space-y-4">
                                     <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">Start Time</Label>
                                     <div className="relative">
                                         <Clock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
@@ -466,6 +512,19 @@ const handleAIGenerated = (generatedData) => {
                                         />
                                     </div>
                                     {errors.startTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.startTime.message}</p>}
+                                </div>
+
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black text-zinc-500 uppercase tracking-widest ml-1">End Time</Label>
+                                    <div className="relative">
+                                        <Clock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-700" />
+                                        <Input
+                                            {...register("endTime")}
+                                            type="time"
+                                            className="h-16 pl-14 bg-zinc-900/50 border-white/5 text-white font-bold rounded-2xl focus:border-white/20 transition-all shadow-none"
+                                        />
+                                    </div>
+                                    {errors.endTime && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.endTime.message}</p>}
                                 </div>
 
                                 <div className="space-y-4">
