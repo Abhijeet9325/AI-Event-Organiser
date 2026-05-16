@@ -20,23 +20,21 @@ const SearchLocationBar = () => {
     const searchRef = useRef(null);
 
     const [selectedState, setSelectedState] = useState("");
-    const [selectedCity, setSelectedCity] = useState("")
+    const [selectedCity, setSelectedCity] = useState("");
+    const [stateSearch, setStateSearch] = useState("");
+    const [citySearch, setCitySearch] = useState("");
 
-    const { mutate: updateLocation } = useConvexMutation(
-        api.users.completeOnBoarding
-    );
+    const indianStates = State.getStatesOfCountry("IN");
+
+    const filteredStates = useMemo(() => {
+        if (!stateSearch) return indianStates;
+        return indianStates.filter(s => s.name.toLowerCase().includes(stateSearch.toLowerCase()));
+    }, [indianStates, stateSearch]);
 
     const { data: currentUser, isLoading } = useConvexQuery(
         api.users.getCurrentUser
     )
-
-    const { data: searchResults, isLoading: searchLoading } = useConvexQuery(
-        api.search.searchEvents,
-        searchQuery.trim().length >= 2 ? { query: searchQuery, limit: 5 } : "skip"
-    )
-
-    const indianStates = State.getStatesOfCountry("IN")
-
+    
     useEffect(() => {
         if (currentUser?.location) {
             setSelectedState(currentUser.location.state || "")
@@ -49,7 +47,22 @@ const SearchLocationBar = () => {
         const stateObj = indianStates.find((s) => s.name === selectedState)
         if (!stateObj) return [];
         return City.getCitiesOfState("IN", stateObj.isoCode)
-    }, [selectedState, indianStates])
+    }, [selectedState, indianStates]);
+
+    const filteredCities = useMemo(() => {
+        if (!citySearch) return cities;
+        return cities.filter(c => c.name.toLowerCase().includes(citySearch.toLowerCase()));
+    }, [cities, citySearch]);
+
+    const { mutate: updateLocation } = useConvexMutation(
+        api.users.completeOnBoarding
+    );
+
+
+    const { data: searchResults, isLoading: searchLoading } = useConvexQuery(
+        api.search.searchEvents,
+        searchQuery.trim().length >= 2 ? { query: searchQuery, limit: 5 } : "skip"
+    )
 
     const debouncedSetQuery = useRef(
         debounce((value) => setSearchQuery(value), 300)
@@ -91,7 +104,7 @@ const SearchLocationBar = () => {
 
     return (
         <div className='flex items-center w-full max-w-3xl mx-0.5 md:mx-4' ref={searchRef}>
-            <div className='relative flex flex-1 items-center border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300 bg-zinc-900/50 md:bg-transparent'>
+            <div className='relative flex flex-1 items-center flex-nowrap border border-white/10 rounded-xl focus-within:border-white/20 transition-all duration-300 bg-zinc-900/50 md:bg-transparent'>
                 {/* Search Part */}
                 <div className='relative flex-1 flex items-center pl-1.5 md:pl-3 min-w-0'>
                     <Search className="w-3 h-3 md:w-4 md:h-4 text-zinc-500 shrink-0" />
@@ -105,39 +118,70 @@ const SearchLocationBar = () => {
                 </div>
 
                 {/* Divider */}
-                <div className='h-4 md:h-5 w-px'></div>
+                <div className='h-4 md:h-5 w-px bg-white/10 shrink-0'></div>
 
                 {/* State Select */}
-                <div>
+                <div className='shrink-0'>
                     <Select
                         value={selectedState}
                         onValueChange={handleLocationSelect}
+                        onOpenChange={(open) => {
+                            if (!open) setStateSearch("");
+                        }}
                     >
                         <SelectTrigger className="w-[55px] md:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors shadow-none rounded-none px-1 md:px-3">
                             <SelectValue placeholder="State" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                            <div 
+                                className="p-2 sticky top-0 bg-zinc-950 z-10 border-b border-white/5"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onMouseMove={(e) => e.stopPropagation()}
+                            >
+                                <div className="relative flex items-center px-2 h-8 rounded-md bg-zinc-900/50 border border-white/5">
+                                    <Search className="w-3 h-3 text-zinc-600 mr-2 shrink-0" />
+                                    <input
+                                        autoFocus
+                                        className="w-full bg-transparent border-none focus:ring-0 text-[11px] text-white placeholder:text-zinc-700 outline-none"
+                                        placeholder="Search state..."
+                                        value={stateSearch}
+                                        onChange={(e) => setStateSearch(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            e.stopPropagation();
+                                        }}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                </div>
+                            </div>
                             <SelectGroup>
-                                {indianStates.map((state) => (
+                                {filteredStates.map((state) => (
                                     <SelectItem key={state.isoCode} value={state.name} className="focus:bg-white/10 focus:text-white text-xs">
                                         {state.name}
                                     </SelectItem>
                                 ))}
+                                {filteredStates.length === 0 && (
+                                    <div className="px-4 py-3 text-[10px] font-bold text-zinc-600 uppercase tracking-widest text-center">
+                                        No states found
+                                    </div>
+                                )}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Divider */}
-                <div className='h-4 md:h-5 w-px'></div>
+                <div className='h-4 md:h-5 w-px bg-white/10 shrink-0'></div>
 
                 {/* City Select */}
-                <div>
+                <div className='shrink-0'>
                     <Select
                         value={selectedCity}
                         onValueChange={(value) => {
                             setSelectedCity(value);
                             handleLocationChange(selectedState, value);
+                        }}
+                        onOpenChange={(open) => {
+                            if (!open) setCitySearch("");
                         }}
                         disabled={!selectedState}
                     >
@@ -145,12 +189,37 @@ const SearchLocationBar = () => {
                             <SelectValue placeholder="City" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
+                            <div 
+                                className="p-2 sticky top-0 bg-zinc-950 z-10 border-b border-white/5"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onMouseMove={(e) => e.stopPropagation()}
+                            >
+                                <div className="relative flex items-center px-2 h-8 rounded-md bg-zinc-900/50 border border-white/5">
+                                    <Search className="w-3 h-3 text-zinc-600 mr-2 shrink-0" />
+                                    <input
+                                        autoFocus
+                                        className="w-full bg-transparent border-none focus:ring-0 text-[11px] text-white placeholder:text-zinc-700 outline-none"
+                                        placeholder="Search city..."
+                                        value={citySearch}
+                                        onChange={(e) => setCitySearch(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            e.stopPropagation();
+                                        }}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                </div>
+                            </div>
                             <SelectGroup>
-                                {cities.map((city) => (
+                                {filteredCities.map((city) => (
                                     <SelectItem key={city.name} value={city.name} className="focus:bg-white/10 focus:text-white text-xs">
                                         {city.name}
                                     </SelectItem>
                                 ))}
+                                {filteredCities.length === 0 && (
+                                    <div className="px-4 py-3 text-[10px] font-bold text-zinc-600 uppercase tracking-widest text-center">
+                                        No cities found
+                                    </div>
+                                )}
                             </SelectGroup>
                         </SelectContent>
                     </Select>

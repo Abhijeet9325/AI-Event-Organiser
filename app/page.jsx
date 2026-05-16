@@ -1,28 +1,10 @@
 "use client";
 
 import {
-  ArrowRight,
-  Sparkles,
-  LayoutGrid,
-  Calendar,
-  Users,
   Zap,
   Shield,
   Globe,
-  CheckCircle2,
-  ChevronLeft,
-  Laptop,
-  Music,
-  Palette,
-  Dumbbell,
-  Heart,
-  Ticket,
-  Clock,
-  Star,
   Search,
-  Bell,
-  CreditCard,
-  Wallet,
   Command,
   Plus,
   MousePointer2,
@@ -35,8 +17,8 @@ import {
 import Link from "next/link";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
 import Image from "next/image";
 
 const bricolageGrotesque = Bricolage_Grotesque({
