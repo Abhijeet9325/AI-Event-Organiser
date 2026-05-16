@@ -34,6 +34,12 @@ export function AiEventCreator({ onEventGenerated }) {
       })
 
       const data = await responce.json()
+      
+      if (!responce.ok) {
+        toast.error(data.error || "Failed to generate event")
+        return;
+      }
+
       onEventGenerated(data)
       toast.success("Event details generated! review and customize below")
       setIsOpen(false)

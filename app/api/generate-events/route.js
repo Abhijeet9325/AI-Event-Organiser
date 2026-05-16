@@ -11,7 +11,7 @@ export async function POST(req) {
       );
     }
 
-    // 🔥 OpenRouter API call
+    // OpenRouter API call
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -50,24 +50,30 @@ Rules:
 
     const data = await response.json();
 
-    // 🔥 Raw AI response
-   console.log("FULL RESPONSE:", JSON.stringify(data, null, 2));
+    if (!response.ok) {
+      console.error("OpenRouter API Error:", data);
+      return NextResponse.json(
+        { error: data.error?.message || "AI service returned an error" },
+        { status: response.status }
+      );
+    }
 
-if (!data.choices || !data.choices[0]) {
-  return NextResponse.json(
-    { error: "No choices returned from AI" },
-    { status: 500 }
-  );
-}
+    if (!data.choices || !data.choices[0]) {
+      console.error("No choices in AI response:", data);
+      return NextResponse.json(
+        { error: "AI did not return any choices. Check your API credits or limits." },
+        { status: 500 }
+      );
+    }
 
-let text = data.choices[0].message.content;
+    let text = data.choices[0].message.content;
 
     console.log("RAW AI:", text); // debug
 
-    // 🔥 Clean markdown
+    // Clean markdown
     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
-    // 🔥 Extract JSON only
+    // Extract JSON only
     const jsonMatch = text.match(/{[\s\S]*}/);
 
     if (!jsonMatch) {
@@ -90,7 +96,7 @@ let text = data.choices[0].message.content;
       );
     }
 
-    // 🔥 Final success
+    // Final success
     return NextResponse.json(eventData);
 
   } catch (error) {
