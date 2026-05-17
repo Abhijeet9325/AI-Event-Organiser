@@ -4,14 +4,16 @@ import { useConvexQuery } from '@/hooks/use-convex-query';
 import { City, State } from 'country-state-city';
 import { useConvexMutation } from '@/hooks/use-convex-query';
 import { debounce } from 'lodash';
-import { ArrowRight, Calendar, Loader2, MapPin, Search } from 'lucide-react';
+import { ArrowRight, Calendar, CheckIcon, ChevronDownIcon, Loader2, MapPin, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from './ui/input';
 import { getCategoryIcon } from '@/lib/data';
 import { format } from 'date-fns';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/button';
 import { createLocationSlug } from '@/lib/location-utils';
+import { cn } from '@/lib/utils';
 
 const SearchLocationBar = () => {
     const router = useRouter();
@@ -23,6 +25,10 @@ const SearchLocationBar = () => {
     const [selectedCity, setSelectedCity] = useState("");
     const [stateSearch, setStateSearch] = useState("");
     const [citySearch, setCitySearch] = useState("");
+    const [stateOpen, setStateOpen] = useState(false);
+    const [cityOpen, setCityOpen] = useState(false);
+    const stateSearchInputRef = useRef(null);
+    const citySearchInputRef = useRef(null);
 
     const indianStates = State.getStatesOfCountry("IN");
 
@@ -122,51 +128,64 @@ const SearchLocationBar = () => {
 
                 {/* State Select */}
                 <div className='shrink-0'>
-                    <Select
-                        value={selectedState}
-                        onValueChange={handleLocationSelect}
+                    <Popover 
+                        open={stateOpen} 
                         onOpenChange={(open) => {
+                            setStateOpen(open);
                             if (!open) setStateSearch("");
                         }}
                     >
-                        <SelectTrigger className="w-[55px] md:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors shadow-none rounded-none px-1 md:px-3">
-                            <SelectValue placeholder="State" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
-                            <div 
-                                className="p-2 sticky top-0 bg-zinc-950 z-10 border-b border-white/5"
-                                onPointerDown={(e) => e.stopPropagation()}
-                                onMouseMove={(e) => e.stopPropagation()}
-                            >
+                        <PopoverTrigger asChild>
+                            <Button variant="ghost" className="w-[55px] md:w-[130px] bg-transparent border-none focus-visible:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors shadow-none rounded-none px-1 md:px-3 justify-between">
+                                <span className="truncate">{selectedState || "State"}</span>
+                                <ChevronDownIcon className="w-3 h-3 opacity-50 shrink-0 ml-1" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent 
+                            className="bg-zinc-950 border-white/10 text-white w-[200px] p-0 shadow-2xl overflow-hidden"
+                            align="start"
+                            onOpenAutoFocus={(e) => {
+                                e.preventDefault();
+                                stateSearchInputRef.current?.focus();
+                            }}
+                        >
+                            <div className="p-2 border-b border-white/5 bg-zinc-950">
                                 <div className="relative flex items-center px-2 h-8 rounded-md bg-zinc-900/50 border border-white/5">
                                     <Search className="w-3 h-3 text-zinc-600 mr-2 shrink-0" />
                                     <input
-                                        autoFocus
+                                        ref={stateSearchInputRef}
                                         className="w-full bg-transparent border-none focus:ring-0 text-[11px] text-white placeholder:text-zinc-700 outline-none"
                                         placeholder="Search state..."
                                         value={stateSearch}
                                         onChange={(e) => setStateSearch(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            e.stopPropagation();
-                                        }}
-                                        onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
                             </div>
-                            <SelectGroup>
+                            <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-white/10">
                                 {filteredStates.map((state) => (
-                                    <SelectItem key={state.isoCode} value={state.name} className="focus:bg-white/10 focus:text-white text-xs">
+                                    <div
+                                        key={state.isoCode}
+                                        onClick={() => {
+                                            handleLocationSelect(state.name);
+                                            setStateOpen(false);
+                                        }}
+                                        className={cn(
+                                            "px-3 py-2 text-xs cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between",
+                                            selectedState === state.name ? "text-[#16d59e] bg-white/5" : "text-zinc-400"
+                                        )}
+                                    >
                                         {state.name}
-                                    </SelectItem>
+                                        {selectedState === state.name && <CheckIcon className="w-3 h-3" />}
+                                    </div>
                                 ))}
                                 {filteredStates.length === 0 && (
                                     <div className="px-4 py-3 text-[10px] font-bold text-zinc-600 uppercase tracking-widest text-center">
                                         No states found
                                     </div>
                                 )}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
 
                 {/* Divider */}
@@ -174,55 +193,70 @@ const SearchLocationBar = () => {
 
                 {/* City Select */}
                 <div className='shrink-0'>
-                    <Select
-                        value={selectedCity}
-                        onValueChange={(value) => {
-                            setSelectedCity(value);
-                            handleLocationChange(selectedState, value);
-                        }}
+                    <Popover 
+                        open={cityOpen} 
                         onOpenChange={(open) => {
+                            if (!selectedState) return;
+                            setCityOpen(open);
                             if (!open) setCitySearch("");
                         }}
-                        disabled={!selectedState}
                     >
-                        <SelectTrigger className="w-[55px] md:w-[130px] bg-transparent border-none focus:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none px-1 md:px-3">
-                            <SelectValue placeholder="City" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-white/10 text-white max-h-60">
-                            <div 
-                                className="p-2 sticky top-0 bg-zinc-950 z-10 border-b border-white/5"
-                                onPointerDown={(e) => e.stopPropagation()}
-                                onMouseMove={(e) => e.stopPropagation()}
+                        <PopoverTrigger asChild>
+                            <Button 
+                                variant="ghost" 
+                                disabled={!selectedState}
+                                className="w-[55px] md:w-[130px] bg-transparent border-none focus-visible:ring-0 text-zinc-400 text-[10px] md:text-[13px] h-8 md:h-9 hover:text-white transition-colors disabled:opacity-30 shadow-none rounded-none px-1 md:px-3 justify-between"
                             >
+                                <span className="truncate">{selectedCity || "City"}</span>
+                                <ChevronDownIcon className="w-3 h-3 opacity-50 shrink-0 ml-1" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent 
+                            className="bg-zinc-950 border-white/10 text-white w-[200px] p-0 shadow-2xl overflow-hidden"
+                            align="start"
+                            onOpenAutoFocus={(e) => {
+                                e.preventDefault();
+                                citySearchInputRef.current?.focus();
+                            }}
+                        >
+                            <div className="p-2 border-b border-white/5 bg-zinc-950">
                                 <div className="relative flex items-center px-2 h-8 rounded-md bg-zinc-900/50 border border-white/5">
                                     <Search className="w-3 h-3 text-zinc-600 mr-2 shrink-0" />
                                     <input
-                                        autoFocus
+                                        ref={citySearchInputRef}
                                         className="w-full bg-transparent border-none focus:ring-0 text-[11px] text-white placeholder:text-zinc-700 outline-none"
                                         placeholder="Search city..."
                                         value={citySearch}
                                         onChange={(e) => setCitySearch(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            e.stopPropagation();
-                                        }}
-                                        onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
                             </div>
-                            <SelectGroup>
+                            <div className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-white/10">
                                 {filteredCities.map((city) => (
-                                    <SelectItem key={city.name} value={city.name} className="focus:bg-white/10 focus:text-white text-xs">
+                                    <div
+                                        key={city.name}
+                                        onClick={() => {
+                                            setSelectedCity(city.name);
+                                            handleLocationChange(selectedState, city.name);
+                                            setCityOpen(false);
+                                        }}
+                                        className={cn(
+                                            "px-3 py-2 text-xs cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between",
+                                            selectedCity === city.name ? "text-[#16d59e] bg-white/5" : "text-zinc-400"
+                                        )}
+                                    >
                                         {city.name}
-                                    </SelectItem>
+                                        {selectedCity === city.name && <CheckIcon className="w-3 h-3" />}
+                                    </div>
                                 ))}
                                 {filteredCities.length === 0 && (
                                     <div className="px-4 py-3 text-[10px] font-bold text-zinc-600 uppercase tracking-widest text-center">
                                         No cities found
                                     </div>
                                 )}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
                 </div>
 
                 {/* Search Results Dropdown */}

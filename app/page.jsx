@@ -121,13 +121,15 @@ export default function Home() {
 
           </motion.div>
 
+
           <h1 className={`text-4xl md:text-7xl font-bold tracking-[-0.04em] mb-10 leading-[0.9] ${bricolageGrotesque.className}`}>
-            The system for <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500"> event excellence.  </span>
+            Better events. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500"> Made simple.</span>
           </h1>
 
           <p className="text-zinc-400 text-sm md:text-xl max-w-xl mx-auto mb-14 leading-relaxed font-light tracking-tight">
-            AIvento streamlines your entire event workflow. From intelligent planning to seamless attendee management and analytics.
+            Plan, Manage, and grow events efforlessly.
+            Everything you need in one place.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
@@ -183,16 +185,16 @@ export default function Home() {
               <div className="flex-1 p-8 md:p-12 flex flex-col md:flex-row gap-12 text-left">
                 <div className="flex-1 space-y-10">
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-bold tracking-tighter">AI-Driven Planning</h3>
-                    <p className="text-zinc-500 text-sm max-w-md leading-relaxed font-medium">Generate entire event strategies, descriptions, and schedules in seconds using our integrated LLM layer.</p>
+                    <h3 className="text-3xl font-bold tracking-tighter">AI-Powered Event Planning</h3>
+                    <p className="text-zinc-500 text-sm max-w-md leading-relaxed font-medium">Generate event ideas, descriptions, schedules, and planning details instantly with intelligent AI assistance built for modern event organizers.</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { icon: <Terminal className="w-4 h-4" />, label: "Commands" },
-                      { icon: <Cpu className="w-4 h-4" />, label: "AI Core" },
-                      { icon: <Layers className="w-4 h-4" />, label: "Stacking" },
-                      { icon: <Activity className="w-4 h-4" />, label: "Status" },
+                      { icon: <Terminal className="w-4 h-4" />, label: "Smart Commands" },
+                      { icon: <Cpu className="w-4 h-4" />, label: "AI Event Engine" },
+                      { icon: <Layers className="w-4 h-4" />, label: "Event Management" },
+                      { icon: <Activity className="w-4 h-4" />, label: "Live Event Status" },
                     ].map((item, i) => (
                       <div key={i} className="p-4 rounded-2xl border border-white/5 bg-zinc-900/20 flex flex-col gap-3 group/item cursor-pointer hover:border-[#16d59e]/30 transition-all">
                         <div className="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center text-zinc-400 group-hover/item:text-[#16d59e] transition-colors">
@@ -212,9 +214,23 @@ export default function Home() {
                   </div>
                   <div className="space-y-6">
                     {[
-                      { label: "Total Managed", val: "10,240", sub: "+12% this month" },
-                      { label: "Tickets Sold", val: "1.2M", sub: "84% conversion" },
-                      { label: "Satisfaction", val: "98.4%", sub: "Top 1% Global" }
+                      {
+                        label: "Total Events Managed",
+                        val: "10,240",
+                        sub: "+12% growth this month"
+                      },
+
+                      {
+                        label: "Tickets Booked",
+                        val: "1.2M",
+                        sub: "84% booking success"
+                      },
+
+                      {
+                        label: "Organizer Satisfaction",
+                        val: "98.4%",
+                        sub: "Trusted by event creators"
+                      }
                     ].map((s, i) => (
                       <div key={i} className="space-y-1">
                         <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{s.label}</div>
@@ -265,32 +281,32 @@ export default function Home() {
               {
                 icon: <Zap className="w-6 h-6" />,
                 title: "Designed for speed",
-                desc: "Reduces noise and restores momentum to help teams ship with high velocity and focus."
+                desc: "Create and manage events faster with smart workflows, instant setup tools, and seamless attendee management."
               },
               {
                 icon: <Cpu className="w-6 h-6" />,
-                title: "Powered by AI agents",
-                desc: "Designed for workflows shared by humans and agents. From drafting PRDs to pushing PRs."
+                title: "Powered by AI ",
+                desc: "Use AI to generate event details, descriptions, and planning ideas in seconds with less manual work."
               },
               {
                 icon: <BarChart3 className="w-6 h-6" />,
-                title: "Built for scale",
-                desc: "Handle everything from intimate meetups to global conferences with zero friction."
+                title: "Built for every event",
+                desc: "From small meetups to large conferences, manage registrations, tickets, and attendees with ease."
               },
               {
                 icon: <Shield className="w-6 h-6" />,
-                title: "Secure by default",
-                desc: "Bank-grade encryption and privacy controls built into every layer of the system."
+                title: "Secure and reliable",
+                desc: "Keep your event data safe with secure authentication, protected access, and reliable performance."
               },
               {
                 icon: <Globe className="w-6 h-6" />,
-                title: "Global network",
-                desc: "Deploy your event pages on a high-speed global CDN for instant loading everywhere."
+                title: "Explore events anywhere",
+                desc: "Discover and manage events across different cities with fast search and location-based experiences."
               },
               {
                 icon: <Command className="w-6 h-6" />,
-                title: "Command center",
-                desc: "Manage your entire event stack from a single, keyboard-centric interface."
+                title: "Smart event dashboard",
+                desc: "Track registrations, manage attendees, and control your entire event workflow from one place."
               }
             ].map((f, i) => (
               <motion.div
@@ -317,14 +333,14 @@ export default function Home() {
             className="text-left"
           >
             <div className="text-[#16d59e] text-[11px] font-bold uppercase tracking-[0.2em] mb-6">Precision UI</div>
-            <h2 className={`text-4xl md:text-6xl font-bold tracking-tight mb-10 leading-[1.1] ${bricolageGrotesque.className}`}>
-              Crafted for <br /> focus and speed.
+            <h2 className={`text-2xl md:text-5xl font-bold tracking-tight mb-10 leading-[1.1] ${bricolageGrotesque.className}`}>
+              Built for <br /> Smarter Event Planning
             </h2>
             <div className="space-y-10">
               {[
-                { title: "Designed for speed", desc: "Reduces noise and restores momentum to help teams ship with high velocity." },
-                { title: "Powered by AI agents", desc: "Workflows shared by humans and agents, from drafting to execution." },
-                { title: "Built for purpose", desc: "AIvento is shaped by the practices of world-class event planners." }
+                { title: "Designed for fast management", desc: "Create, organize, and manage events quickly with tools built to simplify every step of planning." },
+                { title: "Powered by AI assistance", desc: "Generate event ideas, schedules, and descriptions instantly with intelligent AI-powered workflows." },
+                { title: "Built for modern organizers", desc: "Alvento helps event creators manage registrations, attendees, and event operations more efficiently." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-5 group cursor-default">
                   <div className="mt-1.5 w-2 h-2 rounded-full bg-[#16d59e] flex-shrink-0 group-hover:scale-150 transition-transform" />
@@ -352,7 +368,7 @@ export default function Home() {
                     <div className="w-10 h-10 rounded-lg bg-zinc-900 flex items-center justify-center">
                       <Terminal className="w-5 h-5 text-zinc-500" />
                     </div>
-                    <span className="text-lg font-bold tracking-tight">AI Command Center</span>
+                    <span className="text-lg font-bold tracking-tight">AI Command Center Text</span>
                   </div>
                   <div className="flex gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
@@ -362,14 +378,15 @@ export default function Home() {
                 <div className="space-y-4 font-mono">
                   <div className="h-12 rounded-xl bg-zinc-900/50 border border-white/5 flex items-center px-4 gap-4">
                     <span className="text-zinc-600 text-sm">$</span>
-                    <span className="text-zinc-400 text-sm">create event --type "tech" --scale "global"</span>
+                    <span className="text-zinc-400 text-sm">$ create event --category "tech" --city "mumbai"</span>
                     <span className="w-2 h-5 bg-[#16d59e] animate-pulse" />
                   </div>
                   <div className="p-6 rounded-xl border border-[#16d59e]/20 bg-[#16d59e]/5 text-xs text-[#16d59e] leading-loose">
-                    Analyzing global infrastructure... <br />
-                    Allocating AI compute resources... <br />
-                    Generating event architecture... <br />
-                    <span className="font-bold">✓ System ready. Initializing "Global Tech Summit 2026".</span>
+                    Analyzing event requirements... <br />
+                    Generating AI-powered event details...<br />
+                    Preparing schedules and attendee flow...<br />
+                    <span className="font-bold">
+                      ✓ Event setup ready. Launching "Tech Connect 2026".</span>
                   </div>
                 </div>
               </div>
@@ -385,10 +402,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center relative">
           <motion.h2
             {...fadeInUp}
-            className={`text-4xl md:text-7xl font-bold tracking-tighter mb-12 ${bricolageGrotesque.className}`}
+            className={`text-3xl md:text-5xl font-bold tracking-tighter mb-12 ${bricolageGrotesque.className}`}
           >
-            Built for the <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">modern host.</span>
+            Built for smarter <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-600">event experiences.</span>
           </motion.h2>
 
           <motion.div
@@ -397,7 +414,7 @@ export default function Home() {
           >
             <Link href="/create-events">
               <Button size="lg" className="bg-white text-black hover:bg-zinc-200 font-black rounded-full px-6 h-10 text-lg ">
-                Get started today
+                Start Planning Today
               </Button>
             </Link>
           </motion.div>
@@ -431,7 +448,7 @@ export default function Home() {
               <span className={`text-2xl font-bold tracking-tighter ${bricolageGrotesque.className}`}>AIvento</span>
             </Link>
             <p className="text-zinc-600 text-sm max-w-[280px] leading-relaxed font-medium">
-              The system for high-performance event development and attendee management.
+              Everything you need to manage events, registrations, and attendees in one place.
             </p>
           </div>
 
@@ -459,7 +476,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6 text-zinc-700 text-[10px] font-black uppercase tracking-[0.3em]">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
             <div>&copy; 2026 AIvento Systems Inc.</div>
-            <div className="text-zinc-500 normal-case font-medium  text-xs tracking-normal">Made with ❤️ by Abhijit Wankhade</div>
+
           </div>
           <div className="flex gap-10">
             <Link href="#" className="hover:text-white transition-colors">Security Report</Link>
