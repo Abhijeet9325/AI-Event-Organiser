@@ -35,10 +35,10 @@ const MyTicketsPage = () => {
 
     const now = Date.now();
     const upcomingTickets = registrations?.filter(
-        (reg) => reg.event && reg.event.startDate >= now && reg.status === "confirmed"
+        (reg) => reg.event && reg.event.endDate >= now && reg.status === "confirmed"
     )
     const pastTickets = registrations?.filter(
-        (reg) => reg.event && (reg.event.startDate < now || reg.status === "cancelled")
+        (reg) => reg.event && (reg.event.endDate < now || reg.status === "cancelled")
     )
 
     const handleCancelRegistration = async (registrationId) => {
