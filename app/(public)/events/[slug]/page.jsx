@@ -117,13 +117,17 @@ export default function EventDetailPage() {
                         <div className="flex items-center gap-2">
                             <Calendar className="w-5 h-5" />
                             <span className="text-base font-medium">
-                                {format(event.startDate, "EEEE, MMMM dd, yyyy")}
+                                {format(event.startDate, "PPP")}
+                                {event.endDate && format(event.startDate, "yyyy-MM-dd") !== format(event.endDate, "yyyy-MM-dd") && (
+                                    <> — {format(event.endDate, "PPP")}</>
+                                )}
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
                             <Clock className="w-5 h-5" />
                             <span className="text-base font-medium">
-                                {format(event.startDate, "h:mm aa")} - {format(event.endDate, "h:mm aa")}
+                                {event.startTime || format(event.startDate, "p")}
+                                {event.endTime ? ` — ${event.endTime}` : (event.endDate && event.endDate !== event.startDate && ` — ${format(event.endDate, "p")}`)}
                             </span>
                         </div>
                     </div>

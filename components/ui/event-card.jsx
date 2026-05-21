@@ -44,7 +44,11 @@ const EventCard = ({ event,
                             {event.title}
                         </h3>
                         <p className='text-[11px] text-gray-400 font-medium'>
-                            {format(event.startDate, "EEE, dd MMM, HH:mm")}
+                            {format(event.startDate, "EEE, dd MMM")}
+                            {event.endDate && format(event.startDate, "yyyy-MM-dd") !== format(event.endDate, "yyyy-MM-dd") && (
+                                <> — {format(event.endDate, "dd MMM")}</>
+                            )}
+                            {event.startTime && ` | ${event.startTime}`}
                         </p>
                         <div className='flex items-center gap-1.5 text-[11px] text-gray-500'>
                             <MapPin className='w-3 h-3 text-gray-600' />
@@ -107,7 +111,11 @@ const EventCard = ({ event,
                     <div className='flex items-center gap-1.5 text-[11px] text-gray-400'>
                         <Calendar className='w-3 h-3 text-gray-500' />
                         <span className='font-medium line-clamp-1'>
-                            {format(event.startDate, "MMM dd, yyyy")}
+                            {format(event.startDate, "MMM dd")}
+                            {event.endDate && format(event.startDate, "yyyy-MM-dd") !== format(event.endDate, "yyyy-MM-dd") && (
+                                <> — {format(event.endDate, "MMM dd")}</>
+                            )}
+                            {event.startTime && ` | ${event.startTime}`}
                         </span>
                     </div>
                     <div className='flex items-center gap-1.5 text-[11px] text-gray-400'>

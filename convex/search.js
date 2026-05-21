@@ -20,7 +20,7 @@ export const searchEvents = query({
 
         // Filter by date and return
         return searchResults
-            .filter((event) => event.startDate >= now)
+            .filter((event) => event.endDate >= now)
             .slice(0, args.limit ?? 5);
     }
 })

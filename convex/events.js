@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
@@ -11,8 +11,8 @@ export const createEvent = mutation({
 
         startDate: v.number(),
         endDate: v.number(),
-        startTime: v.string(),
-        endTime: v.string(),
+        startTime: v.optional(v.string()),
+        endTime: v.optional(v.string()),
         timeZone: v.string(),
 
         locationType: v.union(v.literal("physical"), v.literal("online")),
@@ -31,76 +31,83 @@ export const createEvent = mutation({
         hasPro: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        try {
-            const user = await ctx.runQuery(internal.users.getCurrentUser);
-            if (!user) {
-                throw new Error("Unauthorized");
-            }
-
-            const isProUser = args.hasPro || false;
-
-            // server side check : verify event limit for users
-            if (!isProUser && user.freeEventCreated >= 1) {
-                throw new Error("Free event limit reached. Please upgrade to pro to create more events");
-            }
-
-            const defaultColor = "#1e3a8a";
-
-            if (!isProUser && args.themeColor && args.themeColor !== defaultColor) {
-                throw new Error("Custom theme colors are a pro features. please upgrade to pro");
-            }
-
-            const themeColor = isProUser ? args.themeColor : defaultColor;
-
-            // Generate slug from title
-            const slugBase = args.title
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")   // replace invalid chars with -
-                .replace(/^-+|-+$/g, "");      // remove leading/trailing -
-
-            const now = Date.now();
-            const slug = `${slugBase}-${now}`;
-
-            const insertObject = {
-                title: args.title,
-                description: args.description,
-                category: args.category,
-                tags: args.tags,
-                startDate: args.startDate,
-                endDate: args.endDate,
-                startTime: args.startTime,
-                endTime: args.endTime,
-                timeZone: args.timeZone,
-                locationType: args.locationType,
-                venue: args.venue,
-                address: args.address,
-                city: args.city,
-                state: args.state,
-                country: args.country,
-                capacity: args.capacity,
-                ticketType: args.ticketType,
-                ticketPrice: args.ticketPrice,
-                coverImage: args.coverImage,
-                themeColor,
-                slug,
-                organizerId: user._id,
-                organizerName: user.name,
-                registrationCount: args.registrationCount ?? 0,
-                createdAt: now,
-                updatedAt: now,
-            };
-
-            const eventId = await ctx.db.insert("events", insertObject);
-
-            // Update user's free event count
-            await ctx.db.patch(user._id, {
-                freeEventCreated: user.freeEventCreated + 1
-            });
-
-            return { eventId, slug };
-        } catch (error) {
-            throw new Error(`Failed to create event: ${error.message}`);
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new ConvexError("Unauthorized");
         }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_token", (q) =>
+                q.eq("tokenIdentifier", identity.tokenIdentifier)
+            )
+            .unique();
+
+        if (!user) {
+            throw new ConvexError("User not found");
+        }
+
+        const isProUser = args.hasPro || false;
+
+        // server side check : verify event limit for users
+        if (!isProUser && user.freeEventCreated >= 1) {
+            throw new ConvexError("Free event limit reached. Please upgrade to pro to create more events");
+        }
+
+        const defaultColor = "#000000";
+
+        if (!isProUser && args.themeColor && args.themeColor !== defaultColor) {
+            throw new ConvexError("Custom theme colors are a pro features. please upgrade to pro");
+        }
+
+        const themeColor = isProUser ? args.themeColor : defaultColor;
+
+        // Generate slug from title
+        const slugBase = args.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")   // replace invalid chars with -
+            .replace(/^-+|-+$/g, "");      // remove leading/trailing -
+
+        const now = Date.now();
+        const slug = `${slugBase}-${now}`;
+
+        const insertObject = {
+            title: args.title,
+            description: args.description,
+            category: args.category,
+            tags: args.tags,
+            startDate: args.startDate,
+            endDate: args.endDate,
+            startTime: args.startTime || "",
+            endTime: args.endTime || "",
+            timeZone: args.timeZone,
+            locationType: args.locationType,
+            venue: args.venue || "",
+            address: args.address || "",
+            city: args.city,
+            state: args.state || "",
+            country: args.country,
+            capacity: args.capacity,
+            ticketType: args.ticketType,
+            ticketPrice: args.ticketPrice || 0,
+            coverImage: args.coverImage || "",
+            themeColor,
+            slug,
+            organizerId: user._id,
+            organizerName: user.name,
+            registrationCount: args.registrationCount ?? 0,
+            createdAt: now,
+            updatedAt: now,
+        };
+
+        const eventId = await ctx.db.insert("events", insertObject);
+
+        // Update user's free event count
+        await ctx.db.patch(user._id, {
+            freeEventCreated: (user.freeEventCreated || 0) + 1
+        });
+
+        return { eventId, slug };
     }
 });
 

@@ -130,7 +130,11 @@ const explorePage = () => {
                           <div className='flex items-center gap-2'>
                             <Calendar className="w-4 h-4 text-white/70" />
                             <span className='text-sm font-medium'>
-                              {format(event.startDate, "MMMM do, yyyy")}
+                              {format(event.startDate, "MMM do")}
+                              {event.endDate && format(event.startDate, "yyyy-MM-dd") !== format(event.endDate, "yyyy-MM-dd") && (
+                                <> — {format(event.endDate, "MMM do")}</>
+                              )}
+                              {event.startTime && ` | ${event.startTime}`}
                             </span>
                           </div>
                           <div className='flex items-center gap-2'>

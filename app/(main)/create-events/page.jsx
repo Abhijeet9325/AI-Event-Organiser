@@ -20,7 +20,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, MapPin, Users, Ticket, Sparkles, Image as ImageIcon, Loader2, ArrowRight, Palette, Plus, Crown } from 'lucide-react';
+import { CalendarIcon, Clock, MapPin, Users, Ticket, Sparkles, Image as ImageIcon, Loader2, ArrowRight, Palette, Plus, Crown, Check, ChevronDown, Search } from 'lucide-react';
 import { CATEGORIES } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -55,6 +55,12 @@ const CreateEvent = () => {
     const [showImagePicker, setShowImagePicker] = useState(false);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [stateSearch, setStateSearch] = useState("");
+    const [citySearch, setCitySearch] = useState("");
+    const [stateOpen, setStateOpen] = useState(false);
+    const [cityOpen, setCityOpen] = useState(false);
+    const stateSearchInputRef = React.useRef(null);
+    const citySearchInputRef = React.useRef(null);
 
     const { has, isLoaded } = useAuth();
     const hasPro = has?.({ plan: "pro" })
@@ -97,12 +103,22 @@ const CreateEvent = () => {
     const { themeColor, ticketType, state: selectedState, coverImage, title, description, category, startDate, endDate, city, ticketPrice } = watchAll;
 
     const indianStates = State.getStatesOfCountry("IN");
+    const filteredStates = useMemo(() => {
+        if (!stateSearch) return indianStates;
+        return indianStates.filter(s => s.name.toLowerCase().includes(stateSearch.toLowerCase()));
+    }, [indianStates, stateSearch]);
+
     const cities = useMemo(() => {
         if (!selectedState) return [];
-        const st = indianStates.find((s) => s.name === selectedState)
-        if (!st) return [];
-        return City.getCitiesOfState("IN", st.isoCode)
-    }, [selectedState, indianStates])
+        const stateObj = indianStates.find((s) => s.name === selectedState)
+        if (!stateObj) return [];
+        return City.getCitiesOfState("IN", stateObj.isoCode)
+    }, [selectedState, indianStates]);
+
+    const filteredCities = useMemo(() => {
+        if (!citySearch) return cities;
+        return cities.filter(c => c.name.toLowerCase().includes(citySearch.toLowerCase()));
+    }, [cities, citySearch]);
 
     const colorPresets = [
         "#000000", "#1e3a8a", "#4c1d95", "#065f46", "#b91c1c", "#d97706", "#be185d"
@@ -110,24 +126,46 @@ const CreateEvent = () => {
 
     const onSubmit = async (data) => {
         try {
+            // Sanitize numbers to prevent NaN errors in Convex
+            const capacity = isNaN(Number(data.capacity)) ? 1 : Number(data.capacity);
+            const ticketPrice = isNaN(Number(data.ticketPrice)) ? 0 : Number(data.ticketPrice);
+
             const formattedData = {
-                ...data,
-                startDate: data.startDate.getTime(),
-                endDate: data.endDate.getTime(),
-                tags: [], // Could add a tags input later
+                title: data.title || "",
+                description: data.description || "",
+                category: data.category || "",
+                tags: [], 
+                startDate: data.startDate?.getTime() || Date.now(),
+                endDate: data.endDate?.getTime() || (data.startDate?.getTime() || Date.now()) + 86400000,
+                startTime: data.startTime || "10:00",
+                endTime: data.endTime || "12:00",
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                country: "India", // Default or from country selector
+                locationType: data.locationType || "physical",
+                venue: data.venue || "",
+                address: data.address || "",
+                city: data.city || "",
+                state: data.state || "",
+                country: "India",
+                capacity: capacity,
+                ticketType: data.ticketType || "free",
+                ticketPrice: ticketPrice,
+                coverImage: data.coverImage || "",
+                themeColor: data.themeColor || "#000000",
                 hasPro: !!hasPro
             };
+
             const { eventId, slug } = await createEvent(formattedData);
             toast.success("Event created successfully!");
-            router.push(`/event/${slug}`);
+            router.push(`/events/${slug}`);
 
         } catch (error) {
-            if (error.message?.includes("Upgrade to Pro")) {
+            const errorMessage = error.message || "";
+            if (errorMessage.includes("limit reached") || errorMessage.includes("Upgrade to Pro")) {
                 setShowUpgradeModal(true);
             } else {
-                toast.error(error.message || "Failed to create event");
+                // Extract clean message from ConvexError
+                const cleanMessage = errorMessage.replace("ConvexError: ", "") || "Failed to create event";
+                toast.error(cleanMessage);
             }
         }
     };
@@ -193,7 +231,7 @@ const CreateEvent = () => {
                             <div className="text-center sm:text-left">
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Event Limit</p>
                                 <div className="flex items-center gap-2 justify-center sm:justify-start">
-                                    <span className="text-2xl font-black text-white">{currentUser?.freeEventsCreated || 0}/1</span>
+                                    <span className="text-2xl font-black text-white">{currentUser?.freeEventCreated || 0}/1</span>
                                     <span className="text-zinc-500 text-xs font-medium italic">Available</span>
                                 </div>
                             </div>
@@ -533,20 +571,70 @@ const CreateEvent = () => {
                                         name="state"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                <SelectTrigger className="h-16 bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all">
-                                                    <SelectValue placeholder="Select State" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60 shadow-2xl">
-                                                    <SelectGroup>
-                                                        {indianStates.map((st) => (
-                                                            <SelectItem key={st.isoCode} value={st.name} className="rounded-xl focus:bg-white/5 focus:text-white py-4 font-bold transition-all cursor-pointer">
+                                            <Popover 
+                                                open={stateOpen} 
+                                                onOpenChange={(open) => {
+                                                    setStateOpen(open);
+                                                    if (!open) setStateSearch("");
+                                                }}
+                                            >
+                                                <PopoverTrigger asChild>
+                                                    <Button 
+                                                        variant="outline" 
+                                                        type="button"
+                                                        className="h-16 w-full bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all justify-between"
+                                                    >
+                                                        <span className="truncate">{field.value || "Select State"}</span>
+                                                        <ChevronDown className="w-4 h-4 opacity-50 shrink-0 ml-2" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent 
+                                                    className="bg-zinc-950 border-white/10 text-white rounded-2xl p-0 max-h-80 shadow-2xl overflow-hidden w-[var(--radix-popover-trigger-width)]"
+                                                    align="start"
+                                                    onOpenAutoFocus={(e) => {
+                                                        e.preventDefault();
+                                                        stateSearchInputRef.current?.focus();
+                                                    }}
+                                                >
+                                                    <div className="p-3 border-b border-white/5 bg-zinc-950">
+                                                        <div className="relative flex items-center px-3 h-10 rounded-xl bg-zinc-900/50 border border-white/5">
+                                                            <Search className="w-4 h-4 text-zinc-600 mr-2 shrink-0" />
+                                                            <input
+                                                                ref={stateSearchInputRef}
+                                                                className="w-full bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-zinc-700 outline-none"
+                                                                placeholder="Search state..."
+                                                                value={stateSearch}
+                                                                onChange={(e) => setStateSearch(e.target.value)}
+                                                                onKeyDown={(e) => e.stopPropagation()}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="max-h-60 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-white/10">
+                                                        {filteredStates.map((st) => (
+                                                            <div
+                                                                key={st.isoCode}
+                                                                onClick={() => {
+                                                                    field.onChange(st.name);
+                                                                    setValue("city", ""); // Reset city when state changes
+                                                                    setStateOpen(false);
+                                                                }}
+                                                                className={cn(
+                                                                    "px-4 py-3 text-sm font-bold cursor-pointer hover:bg-white/5 transition-all flex items-center justify-between mx-2 rounded-xl",
+                                                                    field.value === st.name ? "text-white bg-white/5" : "text-zinc-400"
+                                                                )}
+                                                            >
                                                                 {st.name}
-                                                            </SelectItem>
+                                                                {field.value === st.name && <Check className="w-4 h-4 text-[#16d59e]" />}
+                                                            </div>
                                                         ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                                        {filteredStates.length === 0 && (
+                                                            <div className="px-4 py-8 text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] text-center">
+                                                                No states found
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
                                         )}
                                     />
                                 </div>
@@ -557,20 +645,71 @@ const CreateEvent = () => {
                                         name="city"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!selectedState}>
-                                                <SelectTrigger className="h-16 bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all disabled:opacity-20">
-                                                    <SelectValue placeholder="Select City" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-white/10 text-white rounded-2xl p-2 max-h-60 shadow-2xl">
-                                                    <SelectGroup>
-                                                        {cities.map((ct) => (
-                                                            <SelectItem key={ct.name} value={ct.name} className="rounded-xl focus:bg-white/5 focus:text-white py-4 font-bold transition-all cursor-pointer">
+                                            <Popover 
+                                                open={cityOpen} 
+                                                onOpenChange={(open) => {
+                                                    if (!selectedState) return;
+                                                    setCityOpen(open);
+                                                    if (!open) setCitySearch("");
+                                                }}
+                                            >
+                                                <PopoverTrigger asChild>
+                                                    <Button 
+                                                        variant="outline" 
+                                                        type="button"
+                                                        disabled={!selectedState}
+                                                        className="h-16 w-full bg-zinc-900/50 border-white/5 text-white px-6 rounded-2xl focus:ring-0 shadow-none hover:bg-zinc-800/50 transition-all justify-between disabled:opacity-20"
+                                                    >
+                                                        <span className="truncate">{field.value || "Select City"}</span>
+                                                        <ChevronDown className="w-4 h-4 opacity-50 shrink-0 ml-2" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent 
+                                                    className="bg-zinc-950 border-white/10 text-white rounded-2xl p-0 max-h-80 shadow-2xl overflow-hidden w-[var(--radix-popover-trigger-width)]"
+                                                    align="start"
+                                                    onOpenAutoFocus={(e) => {
+                                                        e.preventDefault();
+                                                        citySearchInputRef.current?.focus();
+                                                    }}
+                                                >
+                                                    <div className="p-3 border-b border-white/5 bg-zinc-950">
+                                                        <div className="relative flex items-center px-3 h-10 rounded-xl bg-zinc-900/50 border border-white/5">
+                                                            <Search className="w-4 h-4 text-zinc-600 mr-2 shrink-0" />
+                                                            <input
+                                                                ref={citySearchInputRef}
+                                                                className="w-full bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-zinc-700 outline-none"
+                                                                placeholder="Search city..."
+                                                                value={citySearch}
+                                                                onChange={(e) => setCitySearch(e.target.value)}
+                                                                onKeyDown={(e) => e.stopPropagation()}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="max-h-60 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-white/10">
+                                                        {filteredCities.map((ct) => (
+                                                            <div
+                                                                key={ct.name}
+                                                                onClick={() => {
+                                                                    field.onChange(ct.name);
+                                                                    setCityOpen(false);
+                                                                }}
+                                                                className={cn(
+                                                                    "px-4 py-3 text-sm font-bold cursor-pointer hover:bg-white/5 transition-all flex items-center justify-between mx-2 rounded-xl",
+                                                                    field.value === ct.name ? "text-white bg-white/5" : "text-zinc-400"
+                                                                )}
+                                                            >
                                                                 {ct.name}
-                                                            </SelectItem>
+                                                                {field.value === ct.name && <Check className="w-4 h-4 text-[#16d59e]" />}
+                                                            </div>
                                                         ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                                        {filteredCities.length === 0 && (
+                                                            <div className="px-4 py-8 text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] text-center">
+                                                                No cities found
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
                                         )}
                                     />
                                 </div>

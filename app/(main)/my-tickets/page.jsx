@@ -179,7 +179,11 @@ const MyTicketsPage = () => {
                                 <div className='flex items-center gap-2'>
                                     <Calendar className='w-4 h-4 text-purple-400' />
                                     <span className='text-xs text-gray-200'>
-                                        {format(selectedTicket.event.startDate, "PPP, h:mm a")}
+                                        {format(selectedTicket.event.startDate, "PPP")} 
+                                        {selectedTicket.event.endDate && format(selectedTicket.event.startDate, "yyyy-MM-dd") !== format(selectedTicket.event.endDate, "yyyy-MM-dd") && (
+                                            <> — {format(selectedTicket.event.endDate, "PPP")}</>
+                                        )}
+                                        {selectedTicket.event.startTime && ` | ${selectedTicket.event.startTime}`}
                                     </span>
                                 </div>
                                 <div className='flex items-center gap-2'>

@@ -301,7 +301,18 @@ export default function EventDashboardPage() {
               <Calendar className="w-5 h-5 mt-0.5 text-blue-400 flex-shrink-0" />
               <div>
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Date & Time</p>
-                <p className="text-base font-medium mt-1 text-slate-100">{format(event.startDate, "PPpp")}</p>
+                <div className="mt-1">
+                  <p className="text-base font-medium text-slate-100">
+                    {format(event.startDate, "PPP")} 
+                    {event.endDate && format(event.startDate, "yyyy-MM-dd") !== format(event.endDate, "yyyy-MM-dd") && (
+                        <> — {format(event.endDate, "PPP")}</>
+                    )}
+                  </p>
+                  <p className="text-sm text-slate-400 font-medium">
+                    {event.startTime || format(event.startDate, "p")} 
+                    {event.endTime ? ` — ${event.endTime}` : (event.endDate && ` — ${format(event.endDate, "p")}`)}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -320,7 +331,9 @@ export default function EventDashboardPage() {
             <div className="flex items-start gap-3">
               <Clock className="w-5 h-5 mt-0.5 text-amber-400 flex-shrink-0" />
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Time Remaining</p>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                  {stats.hasStarted && !stats.isEventPast ? "Time until End" : "Time Remaining"}
+                </p>
                 <p className="text-base font-medium mt-1 text-slate-100">
                   {stats.isEventPast
                     ? "Event has ended"
@@ -375,8 +388,8 @@ export default function EventDashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           {/* Capacity Stat */}
           <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
-            <div className="mb-4 w-12 h-12 bg-purple-900 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-purple-400" />
+            <div className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-gray-300" />
             </div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Total Registrations</p>
             <p className="text-3xl font-bold text-white">{stats.totalRegistrations}</p>
@@ -385,8 +398,8 @@ export default function EventDashboardPage() {
 
           {/* Checked In Stat */}
           <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
-            <div className="mb-4 w-12 h-12 bg-green-900 rounded-xl flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-green-400" />
+            <div className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-gray-300" />
             </div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Checked In</p>
             <p className="text-3xl font-bold text-white">{stats.checkedInCount}</p>
@@ -400,8 +413,8 @@ export default function EventDashboardPage() {
           {/* Revenue or Check-in Rate */}
           {event.ticketType === "paid" ? (
             <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
-              <div className="mb-4 w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-blue-400" />
+              <div className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-gray-300" />
               </div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Total Revenue</p>
               <p className="text-3xl font-bold text-white">₹{stats.totalRevenue}</p>
@@ -409,8 +422,8 @@ export default function EventDashboardPage() {
             </div>
           ) : (
             <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
-              <div className="mb-4 w-12 h-12 bg-orange-900 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-orange-400" />
+              <div className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-gray-300" />
               </div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Check-in Rate</p>
               <p className="text-3xl font-bold text-white">{stats.checkInRate}%</p>
@@ -420,8 +433,8 @@ export default function EventDashboardPage() {
 
           {/* Pending Stat */}
           <div className="bg-gray-950 rounded-2xl p-6 border border-slate-700 shadow-sm">
-            <div className="mb-4 w-12 h-12 bg-amber-900 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-amber-400" />
+            <div className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-gray-300" />
             </div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Pending Check-in</p>
             <p className="text-3xl font-bold text-white">{stats.pendingCount}</p>
