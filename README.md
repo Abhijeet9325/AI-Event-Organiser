@@ -1,4 +1,4 @@
-# 🚀 AIvento — AI Event Organizer
+# 🚀 AIvento - AI Event Organizer
 
 AIvento is a modern **AI-powered event management platform** that enables users to **discover, create, and manage events effortlessly** with a premium SaaS experience.
 
